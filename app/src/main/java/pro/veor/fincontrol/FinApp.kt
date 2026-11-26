@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -17,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -63,12 +61,12 @@ private const val HISTORY = "history"
 private const val PRO = "pro"
 private const val SETTINGS = "settings"
 
-private data class Tab(val key: String, val label: String, val icon: ImageVector)
+private data class Tab(val key: String, val label: String, val icon: Int)
 private val tabs = listOf(
-    Tab(HOME, "Главная", Icons.Outlined.Home),
-    Tab(HISTORY, "История", Icons.Outlined.History),
-    Tab(PRO, "PRO", Icons.Outlined.WorkspacePremium),
-    Tab(SETTINGS, "Настройки", Icons.Outlined.Settings)
+    Tab(HOME, "Главная", R.drawable.ic_home),
+    Tab(HISTORY, "История", R.drawable.ic_history),
+    Tab(PRO, "PRO", R.drawable.ic_star),
+    Tab(SETTINGS, "Настройки", R.drawable.ic_settings)
 )
 
 @Composable
@@ -108,7 +106,7 @@ fun FinApp(
                                 NavigationRailItem(
                                     selected = page == tab.key,
                                     onClick = { page = tab.key },
-                                    icon = { Icon(tab.icon, contentDescription = tab.label) },
+                                    icon = { Icon(painterResource(tab.icon), contentDescription = tab.label) },
                                     label = { Text(tab.label) },
                                     alwaysShowLabel = true
                                 )
@@ -132,7 +130,7 @@ fun FinApp(
                                     NavigationBarItem(
                                         selected = page == tab.key,
                                         onClick = { page = tab.key },
-                                        icon = { Icon(tab.icon, contentDescription = tab.label) },
+                                        icon = { Icon(painterResource(tab.icon), contentDescription = tab.label) },
                                         label = { Text(tab.label, maxLines = 1) }
                                     )
                                 }
@@ -199,31 +197,31 @@ private fun AppBody(
                 AUDIT -> ScenarioContent(
                     "Финансовый контроль",
                     "Чеки, счета, сметы и документы",
-                    Icons.Outlined.ReceiptLong,
+                    R.drawable.ic_receipt,
                     "Импортируйте фото или PDF. На текущем этапе доступен реальный просмотр документа; локальное распознавание и анализ сумм ещё не интегрированы.",
                     onImport, onCamera
                 )
                 VISION -> ScenarioContent(
                     "Компьютерное зрение",
                     "Объекты, маркировка и комплектность",
-                    Icons.Outlined.Visibility,
+                    R.drawable.ic_eye,
                     "Откройте фотографию или камеру. Подсчёт объектов и сравнение с эталоном ещё не интегрированы — приложение не показывает выдуманные результаты.",
                     onImport, onCamera
                 )
                 CAMERA -> ScenarioContent(
                     "Интеллектуальная камера",
                     "Съёмка через приложение камеры устройства",
-                    Icons.Outlined.CameraAlt,
+                    R.drawable.ic_camera,
                     "Снимок остаётся на устройстве. После съёмки откроется предпросмотр; автономная обработка изображения будет добавлена отдельно.",
                     onImport, onCamera
                 )
                 DOCUMENT -> DocumentContent(document, onImport, onCamera, onChangePage)
                 HISTORY -> EmptyContent(
-                    Icons.Outlined.History, "История проверок",
+                    R.drawable.ic_history, "История проверок",
                     "Проверки ещё не выполняются, поэтому история пустая. Мы не создаём фиктивные записи."
                 )
                 PRO -> EmptyContent(
-                    Icons.Outlined.WorkspacePremium, "FIN CONTROL PRO",
+                    R.drawable.ic_star, "FIN CONTROL PRO",
                     "Оплата и лицензирование пока не подключены. Покупки не предлагаются до проверки всех функций и условий."
                 )
                 SETTINGS -> SettingsContent(themeId, onTheme)
@@ -250,14 +248,14 @@ private fun Header(page: String, onPage: (String) -> Unit) {
     ) {
         if (page !in listOf(HOME, HISTORY, PRO, SETTINGS)) {
             IconButton(onClick = { onPage(HOME) }) {
-                Icon(Icons.Outlined.ArrowBack, contentDescription = "Назад")
+                Icon(painterResource(R.drawable.ic_back), contentDescription = "Назад")
             }
         }
         Text(name, style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
         if (page == HOME) {
             IconButton(onClick = { onPage(CAMERA) }) {
-                Icon(Icons.Outlined.CameraAlt, contentDescription = "Открыть камеру")
+                Icon(painterResource(R.drawable.ic_camera), contentDescription = "Открыть камеру")
             }
         }
     }
@@ -278,13 +276,13 @@ private fun HomeContent(onPage: (String) -> Unit, onCamera: () -> Unit, onImport
     ActionCard(
         title = "Компьютерное зрение",
         caption = "Фото, объекты, комплектность",
-        icon = Icons.Outlined.Visibility,
+        icon = R.drawable.ic_eye,
         onClick = { onPage(VISION) }
     )
     ActionCard(
         title = "Финансовый контроль",
         caption = "Чеки, счета и сметы",
-        icon = Icons.Outlined.ReceiptLong,
+        icon = R.drawable.ic_receipt,
         onClick = { onPage(AUDIT) }
     )
     Spacer(Modifier.height(4.dp))
@@ -295,7 +293,7 @@ private fun HomeContent(onPage: (String) -> Unit, onCamera: () -> Unit, onImport
             onClick = onCamera, modifier = Modifier.weight(1f).heightIn(min = 52.dp),
             shape = RoundedCornerShape(14.dp)
         ) {
-            Icon(Icons.Outlined.CameraAlt, contentDescription = null)
+            Icon(painterResource(R.drawable.ic_camera), contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text("Камера")
         }
@@ -303,7 +301,7 @@ private fun HomeContent(onPage: (String) -> Unit, onCamera: () -> Unit, onImport
             onClick = onImport, modifier = Modifier.weight(1f).heightIn(min = 52.dp),
             shape = RoundedCornerShape(14.dp)
         ) {
-            Icon(Icons.Outlined.UploadFile, contentDescription = null)
+            Icon(painterResource(R.drawable.ic_upload), contentDescription = null)
             Spacer(Modifier.width(8.dp))
             Text("Импорт")
         }
@@ -316,7 +314,7 @@ private fun HomeContent(onPage: (String) -> Unit, onCamera: () -> Unit, onImport
 
 @Composable
 private fun ActionCard(
-    title: String, caption: String, icon: ImageVector, onClick: () -> Unit
+    title: String, caption: String, icon: Int, onClick: () -> Unit
 ) {
     Surface(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
@@ -333,7 +331,7 @@ private fun ActionCard(
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(icon, contentDescription = null,
+                Icon(painterResource(icon), contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(28.dp))
             }
@@ -345,7 +343,7 @@ private fun ActionCard(
                 Text(caption, color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodySmall)
             }
-            Icon(Icons.Outlined.ChevronRight, contentDescription = null,
+            Icon(painterResource(R.drawable.ic_chevron), contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
@@ -353,7 +351,7 @@ private fun ActionCard(
 
 @Composable
 private fun ScenarioContent(
-    title: String, subtitle: String, icon: ImageVector,
+    title: String, subtitle: String, icon: Int,
     explanation: String,
     onImport: () -> Unit, onCamera: () -> Unit
 ) {
@@ -366,7 +364,7 @@ private fun ScenarioContent(
             Modifier.padding(22.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Icon(icon, contentDescription = null,
+            Icon(painterResource(icon), contentDescription = null,
                 modifier = Modifier.size(40.dp),
                 tint = MaterialTheme.colorScheme.primary)
             Text(title, style = MaterialTheme.typography.headlineSmall,
@@ -377,7 +375,7 @@ private fun ScenarioContent(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
                 shape = RoundedCornerShape(13.dp)
             ) {
-                Icon(Icons.Outlined.CameraAlt, contentDescription = null)
+                Icon(painterResource(R.drawable.ic_camera), contentDescription = null)
                 Spacer(Modifier.width(10.dp))
                 Text("Сделать снимок")
             }
@@ -386,7 +384,7 @@ private fun ScenarioContent(
                 modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
                 shape = RoundedCornerShape(13.dp)
             ) {
-                Icon(Icons.Outlined.UploadFile, contentDescription = null)
+                Icon(painterResource(R.drawable.ic_upload), contentDescription = null)
                 Spacer(Modifier.width(10.dp))
                 Text("Открыть фото или PDF")
             }
@@ -403,7 +401,7 @@ private fun DocumentContent(
     onChangePage: (Int) -> Unit
 ) {
     if (document == null) {
-        EmptyContent(Icons.Outlined.Description, "Документ не открыт",
+        EmptyContent(R.drawable.ic_document, "Документ не открыт",
             "Импортируйте изображение или сделайте снимок, чтобы увидеть его здесь.")
         Button(onClick = onImport, modifier = Modifier.fillMaxWidth()) {
             Text("Выбрать документ")
@@ -469,7 +467,7 @@ private fun Informational(title: String, body: String) {
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(Modifier.fillMaxWidth().padding(15.dp), verticalAlignment = Alignment.Top) {
-            Icon(Icons.Outlined.Info, contentDescription = null,
+            Icon(painterResource(R.drawable.ic_info), contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(10.dp))
@@ -485,7 +483,7 @@ private fun Informational(title: String, body: String) {
 }
 
 @Composable
-private fun EmptyContent(icon: ImageVector, title: String, explanation: String) {
+private fun EmptyContent(icon: Int, title: String, explanation: String) {
     Surface(
         color = MaterialTheme.colorScheme.surface,
         shape = RoundedCornerShape(20.dp),
@@ -495,7 +493,7 @@ private fun EmptyContent(icon: ImageVector, title: String, explanation: String) 
             Modifier.fillMaxWidth().padding(26.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(icon, contentDescription = null,
+            Icon(painterResource(icon), contentDescription = null,
                 tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(42.dp))
             Spacer(Modifier.height(12.dp))
             Text(title, style = MaterialTheme.typography.titleLarge,
