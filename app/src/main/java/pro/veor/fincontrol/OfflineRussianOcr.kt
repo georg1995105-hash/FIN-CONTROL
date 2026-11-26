@@ -18,7 +18,7 @@ data class OcrReading(val input:TotalReviewInput,val presentation:TotalReviewPre
 object OfflineRussianOcr {
     private const val MODEL="rus.traineddata"
     private const val BYTES=3861738L
-    private const val SHA512="65254c36df8274cee0a2c32e9632f3c2c0032314bf0a99a4c23309e862da7c038ed85745d58697a814f44c656f22ef5a7815ae2bec33f80de1de8e1ea9dd"
+    private const val SHA512="65254c36df8274cee0a2c32e9632f3c2c3c2c0032314bf0a99a4c23309e862da7c038ed85745d58697a814f44c656f22ef5a7815ae2bec33f80de1de8e1ea9dd"
     private val gate=Mutex()
 
     suspend fun recognize(context:Context,bitmap:Bitmap,revision:Long):OcrReading=gate.withLock {

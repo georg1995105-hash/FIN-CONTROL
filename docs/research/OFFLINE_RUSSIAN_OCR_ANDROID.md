@@ -1,6 +1,6 @@
 # FIN CONTROL — локальный OCR русского текста
 
-Движок: Tesseract4Android 4.9.0 (Apache 2.0), данные: tessdata_fast (Apache 2.0). Языковая модель `rus.traineddata` фиксирована на коммите `87416418657359cb625c412a48b6e1d6d41c29bd`. Размер: 3 861 738 байт, SHA-512: `65254c36df8274cee0a2c32e9632f3c2c0032314bf0a99a4c23309e862da7c038ed85745d58697a814f44c656f22ef5a7815ae2bec33f80de1de8e1ea9dd` (сверяется при сборке и на Android).
+Движок: Tesseract4Android 4.9.0 (Apache 2.0), данные: tessdata_fast (Apache 2.0). Языковая модель `rus.traineddata` фиксирована на коммите `87416418657359cb625c412a48b6e1d6d41c29bd`. Размер: 3 861 738 байт, SHA-512: `65254c36df8274cee0a2c32e9632f3c2c3c2c0032314bf0a99a4c23309e862da7c038ed85745d58697a814f44c656f22ef5a7815ae2bec33f80de1de8e1ea9dd` (сверяется при сборке и на Android).
 
 В корне репозитория выполняется `bash tools/android/prepare_tessdata.sh`, затем `gradle :app:assembleDebug :app:lintDebug`. Загрузка обучающих данных происходит **только при сборке**; приложение работает без INTERNET-разрешения. При первом запуске языковой файл копируется из локального APK в `noBackupFilesDir/ocr/tessdata/`, с проверкой SHA-512. При повреждении модели — ошибка вместо скрытой сетевой загрузки. Личные документы и OCR-текст никуда не отправляются.
 
