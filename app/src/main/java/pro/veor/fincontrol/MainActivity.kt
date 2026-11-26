@@ -24,6 +24,7 @@ class MainActivity : ComponentActivity() {
     private var loading by androidx.compose.runtime.mutableStateOf(false)
     private var failure by androidx.compose.runtime.mutableStateOf<String?>(null)
     private var activeSource: Uri? = null
+    private var openGeneration: Long = 0
     private var pendingCamera: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +87,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun openSource(uri: Uri, pageIndex: Int = 0) {
+        // The same URI may deliver multiple PDF pages; guard by request, not URI.
+        val request = ++openGeneration
         activeSource = uri
+        loaded = null
         loading = true
         failure = null
         lifecycleScope.launch {
@@ -96,13 +100,13 @@ class MainActivity : ComponentActivity() {
                 val result = withContext(Dispatchers.IO) {
                     DocumentLoader.open(this@MainActivity, uri, pageIndex)
                 }
-                if (uri == activeSource) loaded = result
+                if (request == openGeneration && uri == activeSource) loaded = result
             } catch (e: Exception) {
-                if (uri == activeSource) {
+                if (request == openGeneration && uri == activeSource) {
                     failure = "Не удалось прочитать документ: " + (e.localizedMessage ?: "ошибка файла")
                 }
             } finally {
-                if (uri == activeSource) loading = false
+                if (request == openGeneration && uri == activeSource) loading = false
             }
         }
     }

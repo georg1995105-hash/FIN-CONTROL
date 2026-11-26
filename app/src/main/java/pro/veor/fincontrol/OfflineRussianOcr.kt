@@ -2,7 +2,7 @@ package pro.veor.fincontrol
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.googlecode.tesseract.android.PageIteratorLevel
+import com.googlecode.tesseract.android.TessBaseAPI.PageIteratorLevel
 import com.googlecode.tesseract.android.TessBaseAPI
 import fincontrol.core.*
 import java.io.File
