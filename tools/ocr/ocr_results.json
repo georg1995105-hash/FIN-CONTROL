@@ -1,0 +1,113 @@
+{
+  "version": "tesseract 5.5.0",
+  "model_sha256": "e16e5e036cce1d9ec2b00063cf8b54472625b9e14d893a169e2b0dedeb4df225",
+  "model_bytes": 3861738,
+  "font_sha256": "89c3c497f618fdaa0b2d1e98fef93582f28c71debd2c4a8cdf41f190ced2909d",
+  "baseline": {
+    "samples": 25,
+    "exact_fields": 57,
+    "total_fields": 75,
+    "candidates": 11,
+    "unsafe_candidates": 0,
+    "median_seconds": 0.048,
+    "variants": {
+      "clean": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "small": {
+        "exact_fields": 15,
+        "candidates": 3,
+        "unsafe_candidates": 0
+      },
+      "blur": {
+        "exact_fields": 15,
+        "candidates": 3,
+        "unsafe_candidates": 0
+      },
+      "tilt": {
+        "exact_fields": 2,
+        "candidates": 0,
+        "unsafe_candidates": 0
+      },
+      "cropped": {
+        "exact_fields": 10,
+        "candidates": 0,
+        "unsafe_candidates": 0
+      }
+    }
+  },
+  "prepared": {
+    "samples": 25,
+    "exact_fields": 70,
+    "total_fields": 75,
+    "candidates": 19,
+    "unsafe_candidates": 0,
+    "median_seconds": 0.081,
+    "variants": {
+      "clean": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "small": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "blur": {
+        "exact_fields": 15,
+        "candidates": 4,
+        "unsafe_candidates": 0
+      },
+      "tilt": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "cropped": {
+        "exact_fields": 10,
+        "candidates": 0,
+        "unsafe_candidates": 0
+      }
+    }
+  },
+  "holdout_prepared": {
+    "samples": 25,
+    "exact_fields": 65,
+    "total_fields": 75,
+    "candidates": 15,
+    "unsafe_candidates": 0,
+    "median_seconds": 0.074,
+    "variants": {
+      "clean": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "small": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "blur": {
+        "exact_fields": 10,
+        "candidates": 0,
+        "unsafe_candidates": 0
+      },
+      "tilt": {
+        "exact_fields": 15,
+        "candidates": 5,
+        "unsafe_candidates": 0
+      },
+      "cropped": {
+        "exact_fields": 10,
+        "candidates": 0,
+        "unsafe_candidates": 0
+      }
+    }
+  },
+  "peak_child_rss_kib": 100888,
+  "peak_python_rss_kib": 100888
+}
