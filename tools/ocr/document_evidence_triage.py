@@ -83,9 +83,14 @@ def triage(lines,observed,scores,max_options=3):
         if bad or any(v!=value for v,i in links.values()):
             raise RuntimeError('strict candidate conflicts with row evidence')
         linked_indices={i for v,i in links.values() if v==value}
-        matching=[c for c in options if c.value==value and c.line_index in linked_indices]
+        matching=[SourceAmount(c.amount,c.line,lines[c.line].box,round(c.score,5),
+                               round(float(raw),5),role(lines[c.line]))
+                  for c,raw in zip(observed,scores)
+                  if c.amount==value and c.line in linked_indices
+                  and c.score>=.85 and float(raw)>=.85]
         if not matching:
             raise RuntimeError('strict value lacks source provenance')
+        matching.sort(key=lambda c:(-c.rank_score,-c.ocr_score,c.line_index))
         return Triage('supported_candidate',reason,matching[0],(),True)
     if not options:
         return Triage('needs_recapture',reason,None,(),True)
@@ -148,7 +153,6 @@ def self_test():
     r=triage(good,obs,[.97,.1])
     assert r.state=='supported_candidate' and r.candidate.value=='123,45'
     assert r.candidate.line_index==1 and r.requires_user_confirmation
-    assert confirm_user_selection if True else False
     missing=[l('ТОВАР 12,00'),l('123,45',220,y=50),l('НДС 5,00',y=100)]
     obs=enriched(missing)
     r=triage(missing,obs,[.1,.96,.3])
@@ -175,7 +179,7 @@ def self_test():
     try:triage(good,enriched(good),[.97])
     except ValueError:pass
     else:raise AssertionError('score mismatch accepted')
-    try:confirm_user_selection(r,0,user_confirmed=True)
+    try:confirm_user_selection(triage(good,enriched(good),[.97,.1]),0,user_confirmed=True)
     except ValueError:pass
     else:raise AssertionError('conflict review failure')
     print('PASS: strict provenance, conflict veto, nonfinal filter, review-only confirmation, fuzzy diagnostics')
