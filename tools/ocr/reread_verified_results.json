@@ -1,0 +1,354 @@
+{
+  "dataset_revision": "b322f00a2a028cf2156d4b4f89f9230d46b90eb7",
+  "models": {
+    "PP-OCRv5_mobile_det": {
+      "files": {
+        "README.md": {
+          "bytes": 16243,
+          "sha256": "4cc20ad6d41af86b3ce9885ffb0956e152574a2eb14179aeb07fd2d3956161ca"
+        },
+        "inference.json": {
+          "bytes": 229777,
+          "sha256": "05feef1acb00aa4cd7362b15f7f501fc4f99d7b1fa73c1c871e0c7b1504b0f5c"
+        },
+        "inference.pdiparams": {
+          "bytes": 4692937,
+          "sha256": "afa1820cb16c1fd0dad589d0f8b389139061c1ef6d68019685fd07be997dda5b"
+        },
+        "inference.yml": {
+          "bytes": 903,
+          "sha256": "98069072e1b6b37d727fd9d9f11725faa46d6ea0de012f2ed26caea011c37699"
+        }
+      },
+      "revision": "0d63e78e2b680928f6b1747d76a08db6e645efb7"
+    },
+    "cyrillic_PP-OCRv3_mobile_rec": {
+      "files": {
+        "README.md": {
+          "bytes": 6873,
+          "sha256": "fa9b7d6d228ca032cdbd2c419ba441c85b788afbf0e2fa7a02e9aa435dedaeb3"
+        },
+        "inference.json": {
+          "bytes": 168414,
+          "sha256": "dc28fdd0fcf95709d8e9b2bed2e9eb43d2dfd9ad010f268079470c6aad7a0e9a"
+        },
+        "inference.pdiparams": {
+          "bytes": 8934498,
+          "sha256": "2ef815afbb8970610618561946ce86faf60745ada64cd316ed34bfe34bdbf46f"
+        },
+        "inference.yml": {
+          "bytes": 1823,
+          "sha256": "ab334f31f74bac79bf7d1eeaf59756b38e175c1f731af46ed5e372d845452015"
+        }
+      },
+      "revision": "e5b3249015e50836e3a7a54301a314b9d7fc7059"
+    },
+    "eslav_PP-OCRv5_mobile_rec": {
+      "files": {
+        "README.md": {
+          "bytes": 6765,
+          "sha256": "94d07e4ca7feb869cad02e41dece52ed64ad93df4340bd8dd901d644067090e5"
+        },
+        "inference.json": {
+          "bytes": 217712,
+          "sha256": "3fb6e2e658f5139ff16e35260de8f0577f106a9505c902e1dfc1f4f1d03cc9cb"
+        },
+        "inference.pdiparams": {
+          "bytes": 7811519,
+          "sha256": "f11057b05d8517868bca505271278973d706600d9dcc184cbcf5c4512091c32b"
+        },
+        "inference.yml": {
+          "bytes": 4538,
+          "sha256": "025039bac23eb4a308efcefa4d58eab3af440767815c6ba6938468bf6353ee5a"
+        }
+      },
+      "revision": "7553801264d3379d8d2e854971989e5e26c22e03"
+    }
+  },
+  "real": {
+    "test": {
+      "evidence": {
+        "independent_confirmed_labels": 2,
+        "lines": 1738,
+        "model_confirmed_labels": 2,
+        "old_weak_labels": 20,
+        "reread_lines": 358
+      },
+      "median_ms": 7589.58,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 3,
+          "correct": 2,
+          "wrong": 1
+        }
+      },
+      "n": 32
+    },
+    "train": {
+      "evidence": {
+        "independent_confirmed_labels": 2,
+        "lines": 1970,
+        "model_confirmed_labels": 2,
+        "old_weak_labels": 27,
+        "reread_lines": 437
+      },
+      "median_ms": 7898.61,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 1,
+          "correct": 1,
+          "wrong": 0
+        }
+      },
+      "n": 40
+    }
+  },
+  "sampling": {
+    "test": {
+      "eligible": 140,
+      "exact_duplicates": 0,
+      "invalid": 11,
+      "rows": 151,
+      "selected": 32,
+      "shards": 1
+    },
+    "train": {
+      "eligible": 222,
+      "exact_duplicates": 1,
+      "invalid": 10,
+      "rows": 233,
+      "selected": 40,
+      "shards": 1
+    }
+  },
+  "synthetic": {
+    "blur": {
+      "evidence": {
+        "independent_confirmed_labels": 2,
+        "lines": 44,
+        "model_confirmed_labels": 3,
+        "old_weak_labels": 2,
+        "reread_lines": 16
+      },
+      "median_ms": 1637.4,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 3,
+          "correct": 3,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        }
+      },
+      "n": 4
+    },
+    "combined": {
+      "evidence": {
+        "independent_confirmed_labels": 4,
+        "lines": 40,
+        "model_confirmed_labels": 4,
+        "old_weak_labels": 0,
+        "reread_lines": 10
+      },
+      "median_ms": 1803.17,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 4,
+          "correct": 4,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 4,
+          "correct": 4,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 4,
+          "correct": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 4,
+          "correct": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4
+    },
+    "duplicate": {
+      "evidence": {
+        "independent_confirmed_labels": 5,
+        "lines": 52,
+        "model_confirmed_labels": 6,
+        "old_weak_labels": 4,
+        "reread_lines": 22
+      },
+      "median_ms": 2489.22,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        }
+      },
+      "n": 4
+    },
+    "missing": {
+      "evidence": {
+        "independent_confirmed_labels": 0,
+        "lines": 36,
+        "model_confirmed_labels": 0,
+        "old_weak_labels": 0,
+        "reread_lines": 6
+      },
+      "median_ms": 1441.01,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 0,
+          "correct": 0,
+          "wrong": 0
+        }
+      },
+      "n": 4
+    },
+    "split": {
+      "evidence": {
+        "independent_confirmed_labels": 4,
+        "lines": 44,
+        "model_confirmed_labels": 4,
+        "old_weak_labels": 2,
+        "reread_lines": 14
+      },
+      "median_ms": 1974.32,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 4,
+          "correct": 4,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 4,
+          "correct": 4,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        }
+      },
+      "n": 4
+    },
+    "tilt": {
+      "evidence": {
+        "independent_confirmed_labels": 2,
+        "lines": 44,
+        "model_confirmed_labels": 2,
+        "old_weak_labels": 2,
+        "reread_lines": 13
+      },
+      "median_ms": 1976.27,
+      "methods": {
+        "independent_consensus": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "model_consensus": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 2,
+          "correct": 2,
+          "wrong": 0
+        }
+      },
+      "n": 4
+    }
+  }
+}
