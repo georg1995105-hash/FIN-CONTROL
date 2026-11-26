@@ -1,0 +1,40 @@
+name: Receipt review Kotlin core verification
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/receipt-review-kotlin-20261126]
+    paths:
+      - "core/src/main/kotlin/**"
+      - "core/src/test/kotlin/**"
+      - ".github/workflows/receipt-review-core.yml"
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Install pinned Kotlin CLI compiler 1.9.0
+        run: |
+          curl --fail --location --retry 3 --silent --show-error \
+            https://github.com/JetBrains/kotlin/releases/download/v1.9.0/kotlin-compiler-1.9.0.zip \
+            -o /tmp/kotlin-compiler-1.9.0.zip
+          unzip -q /tmp/kotlin-compiler-1.9.0.zip -d /tmp/fin-kotlin
+          /tmp/fin-kotlin/kotlinc/bin/kotlinc -version
+      - name: Compile financial core and all receipt/document contract tests
+        run: |
+          /tmp/fin-kotlin/kotlinc/bin/kotlinc \
+            core/src/main/kotlin/fincontrol/core/*.kt \
+            core/src/test/kotlin/fincontrol/core/*.kt \
+            -include-runtime -d /tmp/fin-control-tests.jar
+      - name: Verify ordinary receipt arithmetic
+        run: java -cp /tmp/fin-control-tests.jar fincontrol.core.ReceiptAuditTestKt
+      - name: Verify document comparison and advance accounting
+        run: java -cp /tmp/fin-control-tests.jar fincontrol.core.DocumentAuditTestKt
+      - name: Verify OCR evidence review and explicit user choice
+        run: java -cp /tmp/fin-control-tests.jar fincontrol.core.ReceiptTotalReviewTestKt
