@@ -1,0 +1,2338 @@
+{
+  "dataset_revision": "b322f00a2a028cf2156d4b4f89f9230d46b90eb7",
+  "evaluations": {
+    "fresh_val": {
+      "axis": {
+        "abs_angle_ge_2": 5,
+        "fallback": 8,
+        "reliable": 32
+      },
+      "median_ms": 6981.34,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 14,
+          "correct": 13,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 26,
+          "wrong": 1
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 40,
+          "correct": 32,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 8
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 14,
+          "correct": 13,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 26,
+          "wrong": 1
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 40,
+          "correct": 31,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 9
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 14,
+          "correct": 14,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 26,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 11,
+          "correct": 11,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 29,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 40,
+          "correct": 32,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 8
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 17,
+          "correct": 17,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 23,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 13,
+          "correct": 13,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 27,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 40,
+          "correct": 32,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 8
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 16,
+          "correct": 16,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 24,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 40,
+          "correct": 33,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 7
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 15,
+          "correct": 15,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 25,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 40,
+          "correct": 32,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 8
+        }
+      },
+      "n": 40,
+      "negative_docs": 0,
+      "positive_docs": 40
+    },
+    "previous_new_val": {
+      "axis": {
+        "abs_angle_ge_2": 2,
+        "fallback": 16,
+        "reliable": 24
+      },
+      "median_ms": 8216.18,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 13,
+          "correct": 13,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 27,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 39,
+          "correct": 34,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 5
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 39,
+          "correct": 33,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 6
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 9,
+          "correct": 9,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 31,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 39,
+          "correct": 35,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 9,
+          "correct": 9,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 31,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 39,
+          "correct": 35,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 13,
+          "correct": 13,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 27,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 39,
+          "correct": 35,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 11,
+          "correct": 11,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 29,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 39,
+          "correct": 34,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 5
+        }
+      },
+      "n": 40,
+      "negative_docs": 0,
+      "positive_docs": 40
+    },
+    "prior_val": {
+      "axis": {
+        "abs_angle_ge_2": 3,
+        "fallback": 19,
+        "reliable": 21
+      },
+      "median_ms": 7595.13,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 11,
+          "correct": 11,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 29,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 40,
+          "correct": 29,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 11
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 40,
+          "correct": 29,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 11
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 8,
+          "correct": 8,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 32,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 40,
+          "correct": 31,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 9
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 8,
+          "correct": 8,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 32,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 40,
+          "correct": 31,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 9
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 40,
+          "correct": 29,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 11
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 28,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 40,
+          "correct": 30,
+          "n": 40,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 10
+        }
+      },
+      "n": 40,
+      "negative_docs": 0,
+      "positive_docs": 40
+    },
+    "test": {
+      "axis": {
+        "abs_angle_ge_2": 2,
+        "fallback": 8,
+        "reliable": 24
+      },
+      "median_ms": 7657.87,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 10,
+          "correct": 10,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 22,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 32,
+          "correct": 27,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 5
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 20,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 32,
+          "correct": 28,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 13,
+          "correct": 13,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 19,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 8,
+          "correct": 8,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 24,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 32,
+          "correct": 30,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 2
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 20,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 8,
+          "correct": 8,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 24,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 32,
+          "correct": 30,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 2
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 10,
+          "correct": 10,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 22,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 32,
+          "correct": 28,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 12,
+          "correct": 12,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 20,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 32,
+          "correct": 29,
+          "n": 32,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 3
+        }
+      },
+      "n": 32,
+      "negative_docs": 0,
+      "positive_docs": 32
+    }
+  },
+  "models": {
+    "PP-OCRv5_mobile_det": {
+      "files": {
+        "README.md": {
+          "bytes": 16243,
+          "sha256": "4cc20ad6d41af86b3ce9885ffb0956e152574a2eb14179aeb07fd2d3956161ca"
+        },
+        "inference.json": {
+          "bytes": 229777,
+          "sha256": "05feef1acb00aa4cd7362b15f7f501fc4f99d7b1fa73c1c871e0c7b1504b0f5c"
+        },
+        "inference.pdiparams": {
+          "bytes": 4692937,
+          "sha256": "afa1820cb16c1fd0dad589d0f8b389139061c1ef6d68019685fd07be997dda5b"
+        },
+        "inference.yml": {
+          "bytes": 903,
+          "sha256": "98069072e1b6b37d727fd9d9f11725faa46d6ea0de012f2ed26caea011c37699"
+        }
+      },
+      "revision": "0d63e78e2b680928f6b1747d76a08db6e645efb7"
+    },
+    "eslav_PP-OCRv5_mobile_rec": {
+      "files": {
+        "README.md": {
+          "bytes": 6765,
+          "sha256": "94d07e4ca7feb869cad02e41dece52ed64ad93df4340bd8dd901d644067090e5"
+        },
+        "inference.json": {
+          "bytes": 217712,
+          "sha256": "3fb6e2e658f5139ff16e35260de8f0577f106a9505c902e1dfc1f4f1d03cc9cb"
+        },
+        "inference.pdiparams": {
+          "bytes": 7811519,
+          "sha256": "f11057b05d8517868bca505271278973d706600d9dcc184cbcf5c4512091c32b"
+        },
+        "inference.yml": {
+          "bytes": 4538,
+          "sha256": "025039bac23eb4a308efcefa4d58eab3af440767815c6ba6938468bf6353ee5a"
+        }
+      },
+      "revision": "7553801264d3379d8d2e854971989e5e26c22e03"
+    }
+  },
+  "sampling": {
+    "test": {
+      "eligible": 140,
+      "exact_duplicates": 0,
+      "invalid": 11,
+      "rows": 151,
+      "selected": 32,
+      "shards": 1
+    },
+    "train": {
+      "eligible": 222,
+      "exact_duplicates": 1,
+      "invalid": 10,
+      "rows": 233,
+      "selected": 160,
+      "shards": 1
+    },
+    "val": {
+      "eligible": 137,
+      "exact_duplicates": 0,
+      "invalid": 12,
+      "rows": 149,
+      "selected": 120,
+      "shards": 1
+    }
+  },
+  "synthetic": {
+    "angle_-12": {
+      "axis": {
+        "abs_angle_ge_2": 6,
+        "reliable": 6
+      },
+      "median_ms": 1927.38,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 6
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 6
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 6,
+      "negative_docs": 4,
+      "positive_docs": 2
+    },
+    "angle_-4": {
+      "axis": {
+        "abs_angle_ge_2": 6,
+        "reliable": 6
+      },
+      "median_ms": 1896.34,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 1,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 5
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 6
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 6,
+      "negative_docs": 4,
+      "positive_docs": 2
+    },
+    "angle_-8": {
+      "axis": {
+        "abs_angle_ge_2": 6,
+        "reliable": 6
+      },
+      "median_ms": 1946.26,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 1,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 1,
+          "wrong": 1
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 6
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 1,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 1,
+          "wrong": 1
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 6
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 6,
+      "negative_docs": 4,
+      "positive_docs": 2
+    },
+    "angle_12": {
+      "axis": {
+        "abs_angle_ge_2": 6,
+        "reliable": 6
+      },
+      "median_ms": 1919.76,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 1,
+          "correct": 1,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 1,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 6,
+      "negative_docs": 4,
+      "positive_docs": 2
+    },
+    "angle_4": {
+      "axis": {
+        "abs_angle_ge_2": 6,
+        "reliable": 6
+      },
+      "median_ms": 1887.98,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 6,
+      "negative_docs": 4,
+      "positive_docs": 2
+    },
+    "angle_8": {
+      "axis": {
+        "abs_angle_ge_2": 6,
+        "reliable": 6
+      },
+      "median_ms": 1959.77,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 2,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 6,
+          "correct": 2,
+          "n": 6,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 6,
+      "negative_docs": 4,
+      "positive_docs": 2
+    },
+    "blur": {
+      "axis": {
+        "reliable": 4
+      },
+      "median_ms": 1392.48,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "negative_docs": 0,
+      "positive_docs": 4
+    },
+    "combined": {
+      "axis": {
+        "reliable": 4
+      },
+      "median_ms": 1891.28,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "negative_docs": 0,
+      "positive_docs": 4
+    },
+    "duplicate": {
+      "axis": {
+        "reliable": 4
+      },
+      "median_ms": 2148.09,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 4,
+      "negative_docs": 4,
+      "positive_docs": 0
+    },
+    "missing": {
+      "axis": {
+        "reliable": 4
+      },
+      "median_ms": 1510.65,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 4,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 4,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 4
+        }
+      },
+      "n": 4,
+      "negative_docs": 4,
+      "positive_docs": 0
+    },
+    "split": {
+      "axis": {
+        "reliable": 4
+      },
+      "median_ms": 1883.73,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "negative_docs": 0,
+      "positive_docs": 4
+    },
+    "tilt": {
+      "axis": {
+        "abs_angle_ge_2": 4,
+        "reliable": 4
+      },
+      "median_ms": 1865.76,
+      "methods": {
+        "raw_v2_logistic_protected": {
+          "accepted": 3,
+          "correct": 1,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 1,
+          "wrong": 2
+        },
+        "raw_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 2,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 2
+        },
+        "raw_v2_mlp_protected": {
+          "accepted": 2,
+          "correct": 0,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 2,
+          "wrong": 2
+        },
+        "raw_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 2,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 2
+        },
+        "rect_refit_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_stable": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_refit_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_protected": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        },
+        "rect_same_model_v2_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "negative_accepted": 0,
+          "negative_rejected": 0,
+          "positive_rejected": 0,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "negative_docs": 0,
+      "positive_docs": 4
+    }
+  },
+  "training": {
+    "axis": {
+      "fallback": 47,
+      "reliable": 113
+    },
+    "raw": {
+      "ambiguous_matches_skipped": 115,
+      "candidates": 3242,
+      "features": 1024,
+      "models": {
+        "v2_logistic": {
+          "convergence_warning": false,
+          "fit_ms": 53.33,
+          "float32_bytes": 4100,
+          "parameters": 1025
+        },
+        "v2_mlp": {
+          "convergence_warning": false,
+          "fit_ms": 2753.83,
+          "float32_bytes": 196996,
+          "parameters": 49249
+        }
+      },
+      "negative_synthetic": 120,
+      "positives": 434,
+      "real_documents": 155,
+      "synthetic_documents": 240,
+      "weak_real_missing_reference": 3
+    },
+    "rect": {
+      "ambiguous_matches_skipped": 129,
+      "candidates": 3228,
+      "features": 1024,
+      "models": {
+        "v2_logistic": {
+          "convergence_warning": false,
+          "fit_ms": 46.59,
+          "float32_bytes": 4100,
+          "parameters": 1025
+        },
+        "v2_mlp": {
+          "convergence_warning": false,
+          "fit_ms": 2243.43,
+          "float32_bytes": 196996,
+          "parameters": 49249
+        }
+      },
+      "negative_synthetic": 120,
+      "positives": 420,
+      "real_documents": 155,
+      "synthetic_documents": 240,
+      "weak_real_missing_reference": 3
+    }
+  }
+}
