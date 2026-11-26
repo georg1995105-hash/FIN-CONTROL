@@ -1,0 +1,56 @@
+{
+  "development": {
+    "receipt": {
+      "samples": 4,
+      "candidates": 3,
+      "wrong_candidates": 0
+    },
+    "invoice": {
+      "samples": 4,
+      "candidates": 4,
+      "wrong_candidates": 0
+    },
+    "estimate": {
+      "samples": 4,
+      "candidates": 4,
+      "wrong_candidates": 0
+    },
+    "duplicate_total": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    },
+    "missing_discount": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    }
+  },
+  "new_layouts": {
+    "receipt": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    },
+    "invoice": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    },
+    "estimate": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    },
+    "duplicate_total": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    },
+    "missing_discount": {
+      "samples": 4,
+      "candidates": 0,
+      "wrong_candidates": 0
+    }
+  }
+}
