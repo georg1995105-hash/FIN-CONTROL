@@ -1,0 +1,45 @@
+name: FIN CONTROL synthetic invoice OCR smoke (not real accuracy)
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/invoice-end-to-end-20261127]
+    paths:
+      - "tools/fixtures/**"
+      - "core/src/main/kotlin/fincontrol/core/InvoicePositionAudit.kt"
+      - "core/src/test/kotlin/fincontrol/core/InvoiceImageSmokeTest.kt"
+      - ".github/workflows/invoice-image-smoke.yml"
+permissions:
+  contents: read
+jobs:
+  verify-images:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install local OCR and font/image fixture dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y tesseract-ocr python3-pil fonts-dejavu-core
+      - name: Verify pinned, local Russian OCR model
+        run: bash tools/android/prepare_tessdata.sh
+      - name: Generate ten synthetic invoice images and genuine OCR observations
+        env:
+          TESSDATA_PREFIX: ${{ github.workspace }}/app/src/main/assets/tessdata
+        run: |
+          python3 tools/fixtures/make_invoice_samples.py /tmp/fin-invoice-smoke --ocr
+      - name: Compile financial core and synthetic image evaluator
+        run: |
+          curl -fL --retry 3 --silent --show-error \
+            https://github.com/JetBrains/kotlin/releases/download/v1.9.0/kotlin-compiler-1.9.0.zip \
+            -o /tmp/kotlinc-1.9.0.zip
+          unzip -q /tmp/kotlinc-1.9.0.zip -d /tmp/fin-kotlin
+          /tmp/fin-kotlin/kotlinc/bin/kotlinc \
+            core/src/main/kotlin/fincontrol/core/*.kt \
+            core/src/test/kotlin/fincontrol/core/*.kt \
+            -include-runtime -d /tmp/fin-invoice-tests.jar
+      - name: Check OCR→source→BigDecimal outcomes against authored synthetic labels
+        run: java -cp /tmp/fin-invoice-tests.jar fincontrol.core.InvoiceImageSmokeTestKt /tmp/fin-invoice-smoke
