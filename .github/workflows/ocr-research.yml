@@ -18,7 +18,7 @@ jobs:
       - name: Install CPU research dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y tesseract-ocr tesseract-ocr-rus fonts-liberation
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-rus fonts-liberation fonts-dejavu-core
           # Ubuntu uses a different Liberation font path; resolve it on this runner.
           FONT=$(fc-match -f '%{file}' 'Liberation Sans:style=Regular')
           test -f "$FONT"
@@ -26,12 +26,14 @@ jobs:
           python -m pip install 'paddlepaddle==3.2.0' 'paddleocr==3.2.0' 'paddlex==3.2.1' 'pyarrow==21.0.0' 'huggingface-hub==0.34.4' 'Pillow==11.3.0'
           python -m pip check
       - name: Compare models on synthetic and annotated receipt crops
-        run: python tools/ocr/paddle_comparison.py
+        run: |
+          python -m py_compile tools/ocr/paddle_diagnostic.py tools/ocr/ocr_preprocess.py
+          python tools/ocr/paddle_diagnostic.py
       - name: Preserve aggregate results only
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: ocr-model-research
           path: paddle_*_results.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 7

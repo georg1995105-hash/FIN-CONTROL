@@ -1,0 +1,169 @@
+{
+  "packages": {
+    "paddleocr": "3.2.0",
+    "paddlepaddle": "3.2.0",
+    "huggingface-hub": "0.34.4",
+    "pyarrow": "21.0.0",
+    "Pillow": "11.3.0"
+  },
+  "models": {
+    "cyrillic_PP-OCRv3_mobile_rec": {
+      "revision": "e5b3249015e50836e3a7a54301a314b9d7fc7059",
+      "files": {
+        "inference.yml": "ab334f31f74bac79bf7d1eeaf59756b38e175c1f731af46ed5e372d845452015",
+        "inference.json": "dc28fdd0fcf95709d8e9b2bed2e9eb43d2dfd9ad010f268079470c6aad7a0e9a",
+        "README.md": "fa9b7d6d228ca032cdbd2c419ba441c85b788afbf0e2fa7a02e9aa435dedaeb3",
+        "inference.pdiparams": "2ef815afbb8970610618561946ce86faf60745ada64cd316ed34bfe34bdbf46f"
+      }
+    },
+    "eslav_PP-OCRv5_mobile_rec": {
+      "revision": "7553801264d3379d8d2e854971989e5e26c22e03",
+      "files": {
+        "inference.yml": "025039bac23eb4a308efcefa4d58eab3af440767815c6ba6938468bf6353ee5a",
+        "inference.json": "3fb6e2e658f5139ff16e35260de8f0577f106a9505c902e1dfc1f4f1d03cc9cb",
+        "README.md": "94d07e4ca7feb869cad02e41dece52ed64ad93df4340bd8dd901d644067090e5",
+        "inference.pdiparams": "f11057b05d8517868bca505271278973d706600d9dcc184cbcf5c4512091c32b"
+      }
+    }
+  },
+  "synthetic": {
+    "clean": {
+      "tesseract_rus": {
+        "n": 12,
+        "accepted": 7,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      }
+    },
+    "small": {
+      "tesseract_rus": {
+        "n": 12,
+        "accepted": 12,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      }
+    },
+    "blur": {
+      "tesseract_rus": {
+        "n": 12,
+        "accepted": 12,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      }
+    },
+    "tilt": {
+      "tesseract_rus": {
+        "n": 12,
+        "accepted": 5,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "cyrillic_PP-OCRv3_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      },
+      "eslav_PP-OCRv5_mobile_rec_and_tesseract": {
+        "n": 12,
+        "accepted": 0,
+        "wrong": 0
+      }
+    }
+  },
+  "real_annotated_total_crops": {
+    "tesseract_rus": {
+      "n": 140,
+      "accepted": 1,
+      "wrong": 0
+    },
+    "cyrillic_PP-OCRv3_mobile_rec": {
+      "n": 140,
+      "accepted": 1,
+      "wrong": 0
+    },
+    "eslav_PP-OCRv5_mobile_rec": {
+      "n": 140,
+      "accepted": 22,
+      "wrong": 1
+    },
+    "cyrillic_PP-OCRv3_mobile_rec_and_tesseract": {
+      "n": 140,
+      "accepted": 1,
+      "wrong": 0
+    },
+    "eslav_PP-OCRv5_mobile_rec_and_tesseract": {
+      "n": 140,
+      "accepted": 1,
+      "wrong": 0
+    }
+  },
+  "dataset_skips": 11,
+  "dataset_rows": 151,
+  "dataset_revision": "b322f00a2a028cf2156d4b4f89f9230d46b90eb7"
+}
