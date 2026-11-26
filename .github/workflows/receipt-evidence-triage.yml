@@ -1,0 +1,53 @@
+name: Receipt source evidence and review triage research
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/document-evidence-triage-20261126]
+    paths:
+      - ".github/workflows/receipt-evidence-triage.yml"
+      - "tools/ocr/document_evidence_triage.py"
+      - "tools/ocr/document_evidence_triage_run.py"
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      OMP_NUM_THREADS: "1"
+      OMP_THREAD_LIMIT: "2"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Static and strict triage self-tests
+        run: |
+          python -m py_compile tools/ocr/*.py
+          python tools/ocr/total_candidate.py
+          python tools/ocr/semantic_ranker_v2.py
+          python tools/ocr/total_row_evidence.py
+          python tools/ocr/document_graph.py
+          python tools/ocr/document_evidence_triage.py
+      - name: Install pinned CPU evaluation dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core tesseract-ocr tesseract-ocr-rus
+          python -m pip install 'paddlepaddle==3.2.0' 'paddleocr==3.2.0' 'paddlex==3.2.1' 'numpy==2.4.6' 'pyarrow==21.0.0' 'huggingface-hub==0.34.4' 'Pillow==11.3.0' 'scikit-learn==1.7.2'
+          python -m pip check
+      - name: Preserve earlier OCR regressions
+        run: |
+          python tools/ocr/perspective_geometry.py
+          python tools/ocr/row_ink_segmentation.py
+      - name: Reproduce review-only triage on real and synthetic documents
+        run: python tools/ocr/document_evidence_triage_run.py
+      - name: Keep aggregate metrics, no receipt text or images
+        if: always() && hashFiles('triage_*_results.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: receipt-review-triage
+          path: triage_*_results.json
+          if-no-files-found: error
+          retention-days: 7
