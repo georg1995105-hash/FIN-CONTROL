@@ -1,0 +1,76 @@
+{
+  "source_run": 45800112428,
+  "artifact_id": 15108107569,
+  "artifact_sha256": "080b644a87a10c9db3f6c168e834a6254703110f8d06e6d96cb465d4142f1dc5",
+  "dataset_revision": "b322f00a2a028cf2156d4b4f89f9230d46b90eb7",
+  "test_rows": 151,
+  "test_invalid": 11,
+  "repeated_test": {
+    "n": 140,
+    "old": {
+      "accepted": 4,
+      "correct": 3,
+      "wrong": 1
+    },
+    "anchor": {
+      "accepted": 3,
+      "correct": 3,
+      "wrong": 0
+    },
+    "causes": {
+      "accepted": 4,
+      "confidence_rejected": 55,
+      "geometry_rejected": 2,
+      "multiple_grouped_labels": 7,
+      "no_grouped_label": 26,
+      "no_money_token": 4,
+      "nonstandard_syntax": 27,
+      "row_association": 12,
+      "vertical_association": 3
+    },
+    "facts": {
+      "anchor_low_confidence": 107,
+      "explicit_anchor_fragment": 117,
+      "label_without_amount": 110,
+      "money_token_in_total_row": 93,
+      "multiple_anchor_fragments": 18,
+      "reference_amount_high_confidence": 136,
+      "reference_amount_present": 139,
+      "reference_amount_repeated": 125,
+      "reference_below_anchor": 96,
+      "reference_in_anchor": 3,
+      "reference_in_total_row": 85,
+      "reference_near_right": 103,
+      "reference_near_right_high_confidence": 21,
+      "total_row_geometry_rejected": 2,
+      "total_row_low_confidence": 96,
+      "total_row_money_but_nonstandard_syntax": 32,
+      "total_row_no_money_token": 25,
+      "total_row_split": 102,
+      "total_row_strict_syntax": 63
+    },
+    "unresolved_facts": {
+      "anchor_low_confidence": 97,
+      "explicit_anchor_fragment": 103,
+      "label_without_amount": 96,
+      "money_token_in_total_row": 82,
+      "multiple_anchor_fragments": 11,
+      "reference_amount_high_confidence": 100,
+      "reference_amount_present": 102,
+      "reference_amount_repeated": 93,
+      "reference_below_anchor": 86,
+      "reference_in_anchor": 2,
+      "reference_in_total_row": 76,
+      "reference_near_right": 90,
+      "reference_near_right_high_confidence": 13,
+      "total_row_geometry_rejected": 2,
+      "total_row_low_confidence": 89,
+      "total_row_money_but_nonstandard_syntax": 27,
+      "total_row_no_money_token": 21,
+      "total_row_split": 91,
+      "total_row_strict_syntax": 55
+    }
+  },
+  "additional_validation_completed": false,
+  "failure": "Missing requested dataset split: validation"
+}
