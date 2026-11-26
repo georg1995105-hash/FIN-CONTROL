@@ -1,0 +1,440 @@
+{
+  "dataset_revision": "b322f00a2a028cf2156d4b4f89f9230d46b90eb7",
+  "evaluations": {
+    "test": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 20,
+          "correct": 19,
+          "n": 32,
+          "wrong": 1
+        },
+        "compact_mlp_top1": {
+          "accepted": 32,
+          "correct": 27,
+          "n": 32,
+          "wrong": 5
+        },
+        "logistic_gated": {
+          "accepted": 18,
+          "correct": 17,
+          "n": 32,
+          "wrong": 1
+        },
+        "logistic_top1": {
+          "accepted": 32,
+          "correct": 26,
+          "n": 32,
+          "wrong": 6
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 32,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 3,
+          "correct": 2,
+          "n": 32,
+          "wrong": 1
+        }
+      },
+      "n": 32,
+      "reference_present_in_spans": 31
+    },
+    "val": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 23,
+          "correct": 19,
+          "n": 40,
+          "wrong": 4
+        },
+        "compact_mlp_top1": {
+          "accepted": 40,
+          "correct": 32,
+          "n": 40,
+          "wrong": 8
+        },
+        "logistic_gated": {
+          "accepted": 19,
+          "correct": 17,
+          "n": 40,
+          "wrong": 2
+        },
+        "logistic_top1": {
+          "accepted": 40,
+          "correct": 31,
+          "n": 40,
+          "wrong": 9
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 40,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 1,
+          "correct": 1,
+          "n": 40,
+          "wrong": 0
+        }
+      },
+      "n": 40,
+      "reference_present_in_spans": 37
+    }
+  },
+  "models": {
+    "PP-OCRv5_mobile_det": {
+      "files": {
+        "README.md": {
+          "bytes": 16243,
+          "sha256": "4cc20ad6d41af86b3ce9885ffb0956e152574a2eb14179aeb07fd2d3956161ca"
+        },
+        "inference.json": {
+          "bytes": 229777,
+          "sha256": "05feef1acb00aa4cd7362b15f7f501fc4f99d7b1fa73c1c871e0c7b1504b0f5c"
+        },
+        "inference.pdiparams": {
+          "bytes": 4692937,
+          "sha256": "afa1820cb16c1fd0dad589d0f8b389139061c1ef6d68019685fd07be997dda5b"
+        },
+        "inference.yml": {
+          "bytes": 903,
+          "sha256": "98069072e1b6b37d727fd9d9f11725faa46d6ea0de012f2ed26caea011c37699"
+        }
+      },
+      "revision": "0d63e78e2b680928f6b1747d76a08db6e645efb7"
+    },
+    "eslav_PP-OCRv5_mobile_rec": {
+      "files": {
+        "README.md": {
+          "bytes": 6765,
+          "sha256": "94d07e4ca7feb869cad02e41dece52ed64ad93df4340bd8dd901d644067090e5"
+        },
+        "inference.json": {
+          "bytes": 217712,
+          "sha256": "3fb6e2e658f5139ff16e35260de8f0577f106a9505c902e1dfc1f4f1d03cc9cb"
+        },
+        "inference.pdiparams": {
+          "bytes": 7811519,
+          "sha256": "f11057b05d8517868bca505271278973d706600d9dcc184cbcf5c4512091c32b"
+        },
+        "inference.yml": {
+          "bytes": 4538,
+          "sha256": "025039bac23eb4a308efcefa4d58eab3af440767815c6ba6938468bf6353ee5a"
+        }
+      },
+      "revision": "7553801264d3379d8d2e854971989e5e26c22e03"
+    }
+  },
+  "packages": {
+    "numpy": "2.4.6",
+    "paddleocr": "3.2.0",
+    "paddlepaddle": "3.2.0",
+    "scikit-learn": "1.7.2"
+  },
+  "sampling": {
+    "test": {
+      "eligible": 140,
+      "exact_duplicates": 0,
+      "invalid": 11,
+      "rows": 151,
+      "selected": 32,
+      "shards": 1
+    },
+    "train": {
+      "eligible": 222,
+      "exact_duplicates": 1,
+      "invalid": 10,
+      "rows": 233,
+      "selected": 100,
+      "shards": 1
+    },
+    "val": {
+      "eligible": 137,
+      "exact_duplicates": 0,
+      "invalid": 12,
+      "rows": 149,
+      "selected": 40,
+      "shards": 1
+    }
+  },
+  "synthetic": {
+    "blur": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "compact_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_gated": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "reference_present_in_spans": 4
+    },
+    "combined": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "compact_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_gated": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_top1": {
+          "accepted": 4,
+          "correct": 2,
+          "n": 4,
+          "wrong": 2
+        },
+        "old_anchor": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "reference_present_in_spans": 4
+    },
+    "duplicate": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "compact_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "wrong": 4
+        },
+        "logistic_gated": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "wrong": 4
+        },
+        "old_anchor": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "reference_present_in_spans": 0
+    },
+    "missing": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "wrong": 4
+        },
+        "compact_mlp_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "wrong": 4
+        },
+        "logistic_gated": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_top1": {
+          "accepted": 4,
+          "correct": 0,
+          "n": 4,
+          "wrong": 4
+        },
+        "old_anchor": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "reference_present_in_spans": 0
+    },
+    "split": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "compact_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_gated": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "reference_present_in_spans": 4
+    },
+    "tilt": {
+      "methods": {
+        "compact_mlp_gated": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        },
+        "compact_mlp_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_gated": {
+          "accepted": 0,
+          "correct": 0,
+          "n": 4,
+          "wrong": 0
+        },
+        "logistic_top1": {
+          "accepted": 4,
+          "correct": 4,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_anchor": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        },
+        "old_structure": {
+          "accepted": 2,
+          "correct": 2,
+          "n": 4,
+          "wrong": 0
+        }
+      },
+      "n": 4,
+      "reference_present_in_spans": 4
+    }
+  },
+  "training": {
+    "documents_used": 86,
+    "documents_without_both_classes": 14,
+    "features": 512,
+    "models": {
+      "compact_mlp": {
+        "convergence_warning": true,
+        "fit_ms": 363.85,
+        "float32_parameter_bytes": 65796,
+        "parameter_count": 16449
+      },
+      "logistic": {
+        "convergence_warning": false,
+        "fit_ms": 17.2,
+        "float32_parameter_bytes": 2052,
+        "parameter_count": 513
+      }
+    },
+    "positive_candidates": 215,
+    "training_candidates": 935
+  }
+}
