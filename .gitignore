@@ -12,3 +12,6 @@ local.properties
 *.aab
 *.jar
 private/
+
+# OCR language data fetched from pinned source at build-time; never commit binaries.
+*.traineddata
