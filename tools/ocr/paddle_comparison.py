@@ -18,7 +18,7 @@ import pyarrow.parquet as pq
 from paddleocr import TextRecognition
 from number_probe import VALUES, VARIANTS, fixture, read, MONEY
 
-MODELS = ('cyrillic_PP-OCRv3_mobile_rec', 'cyrillic_PP-OCRv5_mobile_rec')
+MODELS = ('cyrillic_PP-OCRv3_mobile_rec', 'eslav_PP-OCRv5_mobile_rec')
 DATASET = 'cdek-ocr/receipt-ocr-ru'
 
 def normal(value):
@@ -36,13 +36,16 @@ def crop_box(raw, width, height):
             x2,y2=max(p[0] for p in box),max(p[1] for p in box)
         else: return None
         if not all(math.isfinite(x) for x in (x1,y1,x2,y2)): return None
+        # CDEK annotations can use normalized coordinates, not pixels.
+        if 0 <= x1 < x2 <= 1 and 0 <= y1 < y2 <= 1:
+            x1, x2, y1, y2 = x1*width, x2*width, y1*height, y2*height
         if not (0<=x1<x2<=width and 0<=y1<y2<=height and x2-x1>=10 and y2-y1>=8): return None
         return math.floor(x1),math.floor(y1),math.ceil(x2),math.ceil(y2)
     except (TypeError,ValueError,KeyError,IndexError,OverflowError): return None
 
 def paddle_read(model, im, path):
     im.convert('RGB').save(path)
-    result = model.predict(input=str(path),batch_size=1)
+    result = list(model.predict(input=str(path),batch_size=1))
     if len(result)!=1: return None
     entry=result[0].json['res']
     return normal(entry['rec_text']) if float(entry['rec_score'])>=0.85 else None

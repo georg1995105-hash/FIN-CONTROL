@@ -9,7 +9,7 @@ jobs:
     timeout-minutes: 25
     env:
       OMP_THREAD_LIMIT: "2"
-      OMP_NUM_THREADS: "2"
+      OMP_NUM_THREADS: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,7 +23,7 @@ jobs:
           FONT=$(fc-match -f '%{file}' 'Liberation Sans:style=Regular')
           test -f "$FONT"
           sed -i "s|^FONT = .*|FONT = '$FONT'|" tools/ocr/number_probe.py
-          python -m pip install 'paddlepaddle==3.2.0' 'paddleocr==3.2.0' 'pyarrow==21.0.0' 'huggingface-hub==0.34.4' 'Pillow==11.3.0'
+          python -m pip install 'paddlepaddle==3.2.0' 'paddleocr==3.2.0' 'paddlex==3.2.1' 'pyarrow==21.0.0' 'huggingface-hub==0.34.4' 'Pillow==11.3.0'
           python -m pip check
       - name: Compare models on synthetic and annotated receipt crops
         run: python tools/ocr/paddle_comparison.py
