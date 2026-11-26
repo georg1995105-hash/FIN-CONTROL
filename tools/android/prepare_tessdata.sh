@@ -14,6 +14,8 @@ trap 'rm -f "$TEMP"' EXIT
 curl --fail --location --show-error --silent --retry 5 --retry-all-errors --retry-delay 3 \
   "https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/$REV/rus.traineddata" -o "$TEMP"
 [[ "$(stat -c %s "$TEMP")" == "3861738" ]] || { echo "Unexpected model size" >&2; exit 1; }
+echo "Pinned source digest for verification:"
+sha512sum "$TEMP"
 echo "$SHA512  $TEMP" | sha512sum -c
 mv "$TEMP" "$FILE"
 echo "Verified pinned Apache-2.0 Russian OCR asset"
