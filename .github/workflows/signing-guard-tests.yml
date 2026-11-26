@@ -1,0 +1,21 @@
+name: FIN CONTROL signing policy tests
+on:
+  push:
+    branches: [feature/stable-signing-pipeline-20261127]
+    paths:
+      - "tools/android/init_keystore.sh"
+      - "tools/android/verify_upgrade_pair.sh"
+      - "tools/android/test_signing_guards.sh"
+      - ".github/workflows/android-stable-signing.yml"
+      - ".github/workflows/signing-guard-tests.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  policy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate scripts and upgrade-blocking policy
+        run: bash tools/android/test_signing_guards.sh
