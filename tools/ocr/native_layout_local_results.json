@@ -1,0 +1,28 @@
+{
+  "scope": "synthetic rendered receipts, actual local Tesseract rus; native grammar only, no Paddle ranking",
+  "images": 11,
+  "by_psm": {
+    "3": {
+      "correct": 5,
+      "wrong": 0,
+      "refused": 0,
+      "negative_rejected": 6,
+      "n": 11
+    },
+    "4": {
+      "correct": 5,
+      "wrong": 0,
+      "refused": 0,
+      "negative_rejected": 6,
+      "n": 11
+    },
+    "6": {
+      "correct": 5,
+      "wrong": 0,
+      "refused": 0,
+      "negative_rejected": 6,
+      "n": 11
+    }
+  },
+  "tesseract": "tesseract 5.5.0"
+}

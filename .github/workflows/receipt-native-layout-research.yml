@@ -1,0 +1,62 @@
+name: Native receipt line hierarchy research (manual)
+on:
+  workflow_dispatch:
+  push:
+    branches: [research/native-layout-20261126]
+    paths: [.github/workflows/receipt-native-layout-research.yml]
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      OMP_NUM_THREADS: "1"
+      OMP_THREAD_LIMIT: "2"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install lightweight test dependencies
+        run: python -m pip install 'numpy==2.4.6' 'Pillow==11.3.0'
+      - name: Run existing and native layout regression checks
+        run: |
+          python -m py_compile tools/ocr/*.py
+          python tools/ocr/ocr_preprocess.py
+          python tools/ocr/total_candidate.py
+          python tools/ocr/document_structure.py
+          python tools/ocr/layout_diagnostics.py
+          python tools/ocr/reread_evidence.py
+          python tools/ocr/semantic_ranker.py
+          python tools/ocr/semantic_ranker_v2.py
+          python tools/ocr/document_geometry.py
+          python tools/ocr/total_row_evidence.py
+          python tools/ocr/row_reread_scheduler.py
+          python tools/ocr/page_layout_evidence.py
+          python tools/ocr/test_native_layout_core.py
+          python tools/ocr/native_layout_evidence.py
+      - name: Install CPU research dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core tesseract-ocr tesseract-ocr-rus
+          python -m pip install 'paddlepaddle==3.2.0' 'paddleocr==3.2.0' 'paddlex==3.2.1' 'pyarrow==21.0.0' 'huggingface-hub==0.34.4' 'Pillow==11.3.0' 'scikit-learn==1.7.2'
+          python -m pip check
+      - name: Verify perspective projection and incomplete outlines
+        run: python tools/ocr/perspective_geometry.py
+      - name: Check pixel-level separation and overlapping-row rejection
+        run: python tools/ocr/row_ink_segmentation.py
+      - name: Actual Tesseract synthetic smoke test
+        run: python tools/ocr/test_native_layout_core.py --ocr-report native_layout_smoke_results.json
+      - name: Paired native hierarchy and baseline evaluation
+        run: python tools/ocr/native_layout_run.py
+      - name: Preserve aggregate results only
+        if: always() && hashFiles('native_layout_*_results.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: receipt-native-layout
+          path: native_layout_*_results.json
+          if-no-files-found: error
+          retention-days: 7
