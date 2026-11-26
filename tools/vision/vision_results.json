@@ -1,0 +1,46 @@
+{
+  "opencv": "4.13.0",
+  "numpy": "2.3.5",
+  "samples": 60,
+  "accepted": 30,
+  "wrong_accepts": 0,
+  "median_ms": 0.37,
+  "variants": {
+    "clean": {
+      "samples": 10,
+      "accepted": 10,
+      "wrong_accepts": 0,
+      "exact": 10
+    },
+    "lighting": {
+      "samples": 10,
+      "accepted": 10,
+      "wrong_accepts": 0,
+      "exact": 10
+    },
+    "small": {
+      "samples": 10,
+      "accepted": 10,
+      "wrong_accepts": 0,
+      "exact": 10
+    },
+    "overlap": {
+      "samples": 10,
+      "accepted": 0,
+      "wrong_accepts": 0,
+      "exact": 0
+    },
+    "cropped": {
+      "samples": 10,
+      "accepted": 0,
+      "wrong_accepts": 0,
+      "exact": 0
+    },
+    "foreign": {
+      "samples": 10,
+      "accepted": 0,
+      "wrong_accepts": 0,
+      "exact": 0
+    }
+  }
+}
