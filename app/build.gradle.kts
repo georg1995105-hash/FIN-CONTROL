@@ -32,6 +32,8 @@ android {
     buildFeatures {
         compose = true
     }
+    // Compile the already verified JVM financial contracts into the app APK.
+    sourceSets.getByName("main").java.srcDir("../core/src/main/kotlin")
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
