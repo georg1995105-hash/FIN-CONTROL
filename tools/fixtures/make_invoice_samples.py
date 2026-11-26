@@ -47,6 +47,14 @@ def recognize(image: Path, dest: Path):
         right = max(int(w["left"]) + int(w["width"]) for w in words)
         bottom = max(int(w["top"]) + int(w["height"]) for w in words)
         rows.append((index, confidence, left, top, right, bottom, text))
+    if not rows:
+        print("Diagnostic: Tesseract TSV first 1400 chars:", repr(result.stdout[:1400]))
+        print("Diagnostic: Tesseract stderr:", repr(result.stderr[:1400]))
+        print("Diagnostic: language root:", os.environ.get("TESSDATA_PREFIX"))
+        print("Diagnostic: source image bytes:", image.stat().st_size)
+        raise RuntimeError("OCR produced no recognized text lines on synthetic fixture")
+    print("OCR fixture", image.name, "line count:", len(rows),
+          "leading text:", [row[-1] for row in rows[:4]])
     dest.write_text("\n".join("\t".join(map(str, row)) for row in rows) + "\n", encoding="utf-8")
 
 def main():
