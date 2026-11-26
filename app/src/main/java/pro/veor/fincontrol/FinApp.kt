@@ -13,6 +13,15 @@ import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
+import android.os.SystemClock
+import fincontrol.core.ReceiptTotalReview
+import fincontrol.core.UserVerifiedTotal
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -448,9 +457,10 @@ private fun DocumentContent(
             ) { Text("Следующая") }
         }
     }
+    ReceiptOcrScreen(document)
     Informational(
-        "Проверка документа",
-        "Снимок открыт локально, но сумма и позиции ещё не распознаны. Результат финансовой проверки не сформирован."
+        "Финансовая проверка",
+        "Распознанная сумма — только текст из снимка. Даже после подтверждения её человеком расчёты, позиции, скидки и полнота документа ещё не проверены."
     )
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         OutlinedButton(onClick = onImport, modifier = Modifier.weight(1f)) {
@@ -458,6 +468,129 @@ private fun DocumentContent(
         }
         OutlinedButton(onClick = onCamera, modifier = Modifier.weight(1f)) {
             Text("Новый снимок")
+        }
+    }
+}
+
+
+@Composable
+private fun ReceiptOcrScreen(document: LoadedDocument) {
+    val context = LocalContext.current.applicationContext
+    val revision = remember(document) { SystemClock.elapsedRealtimeNanos().coerceAtLeast(1L) }
+    var reading by remember(document) { mutableStateOf<OcrReading?>(null) }
+    var busy by remember(document) { mutableStateOf(true) }
+    var scanError by remember(document) { mutableStateOf<String?>(null) }
+    var selected by remember(document) { mutableStateOf<Int?>(null) }
+    var confirmed by remember(document) { mutableStateOf<UserVerifiedTotal?>(null) }
+
+    LaunchedEffect(document) {
+        reading = null
+        selected = null
+        confirmed = null
+        busy = true
+        scanError = null
+        try {
+            val result = withContext(Dispatchers.Default) {
+                OfflineRussianOcr.recognize(context, document.preview, revision)
+            }
+            currentCoroutineContext().ensureActive()
+            reading = result
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            scanError = e.localizedMessage ?: "Русский OCR недоступен."
+        } finally {
+            busy = false
+        }
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(18.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            Modifier.fillMaxWidth().padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text("Распознавание документа", style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold)
+            if (busy) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+                Text("Распознаём русский текст на устройстве…",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant)
+            } else if (scanError != null) {
+                Text("Распознавание не удалось: " + scanError.orEmpty(),
+                    color = MaterialTheme.colorScheme.error)
+                Text("Попробуйте переснять документ. Суммы автоматически не определены.")
+            } else {
+                val result = reading
+                if (result != null) {
+                    Text("Прочитано строк: " + result.lines,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall)
+                    if (result.presentation.choices.isEmpty()) {
+                        Text("Надёжно прочитанных денежных полей нет. Убедитесь, что документ целиком попал в кадр, достаточно освещён и текст не размыт.")
+                    } else {
+                        Text("Выберите сумму, соответствующую итогу в документе. Ничего не выбрано автоматически.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodySmall)
+                        result.presentation.choices.forEachIndexed { index, choice ->
+                            Surface(
+                                modifier = Modifier.fillMaxWidth().clickable {
+                                    selected = index
+                                    confirmed = null
+                                },
+                                color = MaterialTheme.colorScheme.surfaceVariant,
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Row(
+                                    Modifier.padding(10.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = selected == index,
+                                        onClick = {
+                                            selected = index
+                                            confirmed = null
+                                        }
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Column(Modifier.weight(1f)) {
+                                        Text(choice.amount.toPlainString() + " ₽",
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.SemiBold)
+                                        Text(choice.sourceLineText,
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            maxLines = 3,
+                                            overflow = TextOverflow.Ellipsis)
+                                    }
+                                }
+                            }
+                        }
+                        Button(
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                            enabled = selected != null,
+                            onClick = {
+                                confirmed = ReceiptTotalReview.confirm(
+                                    result.input, selected, revision, explicitlyConfirmed = true
+                                )
+                            }
+                        ) { Text("Подтвердить прочитанную сумму") }
+                        if (confirmed != null) {
+                            Text(
+                                "Подтверждена только запись OCR: " +
+                                    confirmed!!.amount.toPlainString() + " ₽. " +
+                                    "Это не подтверждение правильности чека и не результат аудита.",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
