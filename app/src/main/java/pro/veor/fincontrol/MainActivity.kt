@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import fincontrol.core.DemoInvoiceCase
 import java.io.File
 
 /**
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         failure = "На устройстве нет приложения для выбора файлов."
                     }
                 },
+                onDemo = { sample -> openDemo(sample) },
                 onCamera = {
                     try {
                         val folder = File(cacheDir, "captures").apply { mkdirs() }
@@ -107,6 +109,29 @@ class MainActivity : ComponentActivity() {
                 }
             } finally {
                 if (request == openGeneration && uri == activeSource) loading = false
+            }
+        }
+    }
+
+    private fun openDemo(sample: DemoInvoiceCase) {
+        val request = ++openGeneration
+        activeSource = null
+        loaded = null
+        loading = true
+        failure = null
+        lifecycleScope.launch {
+            try {
+                val result = withContext(Dispatchers.Default) {
+                    DemoInvoiceFactory.create(sample)
+                }
+                if (request == openGeneration) loaded = result
+            } catch (e: Exception) {
+                if (request == openGeneration) {
+                    failure = "Не удалось создать учебный счёт: " +
+                        (e.localizedMessage ?: "ошибка")
+                }
+            } finally {
+                if (request == openGeneration) loading = false
             }
         }
     }
