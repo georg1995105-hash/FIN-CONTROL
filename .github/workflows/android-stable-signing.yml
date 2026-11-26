@@ -1,0 +1,79 @@
+name: FIN CONTROL stable signed APK
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      PINNED_CERT_SHA256: "650413702d47bffa382494b86a8ecc500f3f9d47602d3454cba951210b3c1f75"
+      FC_RELEASE_KEYSTORE_B64: ${{ secrets.FC_RELEASE_KEYSTORE_B64 }}
+      FC_RELEASE_STORE_PASSWORD: ${{ secrets.FC_RELEASE_STORE_PASSWORD }}
+      FC_RELEASE_KEY_ALIAS: ${{ secrets.FC_RELEASE_KEY_ALIAS }}
+      FC_RELEASE_KEY_PASSWORD: ${{ secrets.FC_RELEASE_KEY_PASSWORD }}
+      FC_RELEASE_CERT_SHA256: ${{ secrets.FC_RELEASE_CERT_SHA256 }}
+    steps:
+      - name: Require stable private signing material (never default to debug)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in FC_RELEASE_KEYSTORE_B64 FC_RELEASE_STORE_PASSWORD FC_RELEASE_KEY_ALIAS FC_RELEASE_KEY_PASSWORD FC_RELEASE_CERT_SHA256; do
+            [[ -n "${!name:-}" ]] || { echo "Missing GitHub Actions secret: $name" >&2; exit 1; }
+          done
+          [[ "$FC_RELEASE_CERT_SHA256" =~ ^[0-9a-fA-F]{64}$ ]] || { echo 'Invalid trusted fingerprint' >&2; exit 1; }
+          [[ "${FC_RELEASE_CERT_SHA256,,}" == "$PINNED_CERT_SHA256" ]] || {
+            echo "Configured signer does not match the repository pinned certificate" >&2
+            exit 1
+          }
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Android SDK 35
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-35" "build-tools;35.0.0" > /dev/null
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build unsigned release APK
+        run: |
+          bash tools/android/prepare_tessdata.sh
+          gradle --no-daemon --console=plain :app:assembleRelease :app:lintRelease
+      - name: Sign release APK and verify pinned certificate
+        shell: bash
+        run: |
+          set -euo pipefail
+          BT="$ANDROID_HOME/build-tools/35.0.0"
+          INPUT="app/build/outputs/apk/release/app-release-unsigned.apk"
+          [[ -s "$INPUT" ]] || { echo 'No unsigned release APK' >&2; exit 1; }
+          KEYSTORE="$RUNNER_TEMP/fincontrol-signing.p12"
+          ALIGNED="$RUNNER_TEMP/fincontrol-aligned.apk"
+          mkdir -p dist
+          OUTPUT="dist/FIN-CONTROL-signed-beta.apk"
+          printf '%s' "$FC_RELEASE_KEYSTORE_B64" | base64 --decode > "$KEYSTORE"
+          chmod 600 "$KEYSTORE"
+          "$BT/zipalign" -f -p 4 "$INPUT" "$ALIGNED"
+          "$BT/apksigner" sign --ks "$KEYSTORE" --ks-key-alias "$FC_RELEASE_KEY_ALIAS" \
+            --ks-pass env:FC_RELEASE_STORE_PASSWORD --key-pass env:FC_RELEASE_KEY_PASSWORD \
+            --v1-signing-enabled true --v2-signing-enabled true --out "$OUTPUT" "$ALIGNED"
+          "$BT/apksigner" verify --verbose --min-sdk-version 28 "$OUTPUT"
+          ACTUAL="$("$BT/apksigner" verify --print-certs "$OUTPUT" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -1 | tr '[:upper:]' '[:lower:]')"
+          EXPECTED="$(printf '%s' "$FC_RELEASE_CERT_SHA256" | tr '[:upper:]' '[:lower:]')"
+          [[ -n "$ACTUAL" && "$ACTUAL" == "$EXPECTED" ]] || { echo 'Certificate fingerprint mismatch' >&2; exit 1; }
+          "$BT/aapt" dump badging "$OUTPUT" | grep "package: name='pro.veor.fincontrol'"
+          if "$BT/aapt" dump permissions "$OUTPUT" | grep -q 'android.permission.INTERNET'; then echo 'Unexpected INTERNET permission' >&2; exit 1; fi
+          unzip -Z1 "$OUTPUT" | grep '^assets/tessdata/rus.traineddata$' > /dev/null
+          sha256sum "$OUTPUT"
+      - name: Wipe local signing material
+        if: always()
+        run: rm -f "$RUNNER_TEMP/fincontrol-signing.p12" "$RUNNER_TEMP/fincontrol-aligned.apk"
+      - name: Upload signed beta APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: fincontrol-stable-signed-beta
+          path: dist/FIN-CONTROL-signed-beta.apk
+          if-no-files-found: error
+          retention-days: 7
