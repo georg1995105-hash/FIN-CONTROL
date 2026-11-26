@@ -2,7 +2,7 @@ name: Android offline shell build
 on:
   workflow_dispatch:
   push:
-    branches: [feature/android-shell-20261126, feature/offline-russian-ocr-20261126]
+    branches: [feature/android-shell-20261126, feature/offline-russian-ocr-20261126, feature/invoice-end-to-end-20261127]
     paths:
       - "app/**"
       - "core/src/main/kotlin/**"
@@ -44,7 +44,7 @@ jobs:
           /tmp/fin-kotlin/kotlinc/bin/kotlinc \
             core/src/main/kotlin/fincontrol/core/*.kt core/src/test/kotlin/fincontrol/core/*.kt \
             -include-runtime -d /tmp/fin-tests.jar
-          for name in ReceiptAuditTest DocumentAuditTest ReceiptTotalReviewTest ReceiptOcrEvidenceTest; do
+          for name in ReceiptAuditTest DocumentAuditTest ReceiptTotalReviewTest ReceiptOcrEvidenceTest InvoicePositionAuditTest; do
             java -cp /tmp/fin-tests.jar "fincontrol.core.${name}Kt"
           done
       - name: Build offline Android debug APK

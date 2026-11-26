@@ -530,6 +530,8 @@ private fun ReceiptOcrScreen(document: LoadedDocument) {
                     Text("Прочитано строк: " + result.lines,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall)
+                    InvoiceAuditPanel(reading = result, pageCount = document.pages,
+                        revision = revision, confirmedTotal = confirmed)
                     if (result.presentation.choices.isEmpty()) {
                         Text("Надёжно прочитанных денежных полей нет. Убедитесь, что документ целиком попал в кадр, достаточно освещён и текст не размыт.")
                     } else {
@@ -677,5 +679,5 @@ private fun SettingsContent(themeId: String, onTheme: (String) -> Unit) {
         "Конфиденциальность",
         "Документы не передаются в сеть. Резервное копирование отключено. История и оплата пока не реализованы."
     )
-    Informational("Версия", "0.1.0-alpha02 · Локальный OCR (тест)")
+    Informational("Версия", "0.1.0-alpha03 · Сверка позиций (тест)")
 }
