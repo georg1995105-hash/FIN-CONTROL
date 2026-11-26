@@ -1,0 +1,17 @@
+name: GitHub integration permission check
+
+on:
+  push:
+    branches:
+      - diagnostics/github-integration-write-20261126
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Confirm workflow execution
+        run: echo 'GitHub integration can write workflow files and trigger Actions.'
