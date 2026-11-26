@@ -28,7 +28,7 @@ CASES = [
 
 def recognize(image: Path, dest: Path):
     result = subprocess.run(
-        ["tesseract", str(image), "stdout", "-l", "rus", "--psm", "3", "tsv"],
+        ["tesseract", str(image), "stdout", "-l", "rus", "--psm", "3", "-c", "tessedit_create_tsv=1"],
         check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
         env=os.environ.copy()
     )
