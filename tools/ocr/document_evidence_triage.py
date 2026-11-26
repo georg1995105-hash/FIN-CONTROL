@@ -134,7 +134,10 @@ def near_miss_labels(lines):
     matches=0
     for line in lines:
         t=norm_text(line.text)
-        if START.match(t) or OTHER.match(t) or NONFINAL.match(t):
+        prefix=START.match(t)
+        # START permits a digit immediately after a valid prefix, but a
+        # token such as ИТОГ0 is not a correctly transcribed final label.
+        if (prefix and (prefix.end()==len(t) or t[prefix.end()] not in '0123456789')) or OTHER.match(t) or NONFINAL.match(t):
             continue
         initial=re.findall(r'[\w]+',t)[:2]
         if any(_distance(re.sub('[^А-Я]','',word.replace('0','О')),
