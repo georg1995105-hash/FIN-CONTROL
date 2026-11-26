@@ -2,7 +2,7 @@ name: Android offline shell build
 on:
   workflow_dispatch:
   push:
-    branches: [feature/android-shell-20261126]
+    branches: [feature/android-shell-20261126, feature/offline-russian-ocr-20261126]
     paths:
       - "app/**"
       - "core/src/main/kotlin/**"
@@ -10,6 +10,8 @@ on:
       - "settings.gradle.kts"
       - "build.gradle.kts"
       - "gradle.properties"
+      - "tools/android/**"
+      - "core/src/test/kotlin/**"
 permissions:
   contents: read
 concurrency:
@@ -31,6 +33,20 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.9"
+      - name: Fetch and verify pinned Russian OCR model for offline APK
+        run: bash tools/android/prepare_tessdata.sh
+      - name: Verify money extraction and financial core contracts (JDK 21)
+        run: |
+          curl -fL --retry 3 --silent --show-error \
+            https://github.com/JetBrains/kotlin/releases/download/v1.9.0/kotlin-compiler-1.9.0.zip \
+            -o /tmp/kotlinc-1.9.0.zip
+          unzip -q /tmp/kotlinc-1.9.0.zip -d /tmp/fin-kotlin
+          /tmp/fin-kotlin/kotlinc/bin/kotlinc \
+            core/src/main/kotlin/fincontrol/core/*.kt core/src/test/kotlin/fincontrol/core/*.kt \
+            -include-runtime -d /tmp/fin-tests.jar
+          for name in ReceiptAuditTest DocumentAuditTest ReceiptTotalReviewTest ReceiptOcrEvidenceTest; do
+            java -cp /tmp/fin-tests.jar "fincontrol.core.${name}Kt"
+          done
       - name: Build offline Android debug APK
         run: gradle --no-daemon --console=plain :app:assembleDebug :app:lintDebug
       - name: Verify APK manifest, offline permission and artifact
@@ -38,6 +54,8 @@ jobs:
           set -eu
           APK=app/build/outputs/apk/debug/app-debug.apk
           test -s "$APK"
+          unzip -Z1 "$APK" | grep "^assets/tessdata/rus.traineddata$"
+          unzip -Z1 "$APK" | grep -E "lib/arm64-v8a/libtesseract.so"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep "package: name='pro.veor.fincontrol'"
           if "$ANDROID_HOME/build-tools/35.0.0/aapt" dump permissions "$APK" | grep "android.permission.INTERNET"; then
             echo "Unexpected network permission" >&2
