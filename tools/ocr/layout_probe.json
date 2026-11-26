@@ -1,0 +1,30 @@
+{
+  "samples": 20,
+  "variants": {
+    "receipt": {
+      "samples": 4,
+      "candidates": 0,
+      "unsafe": 0
+    },
+    "invoice": {
+      "samples": 4,
+      "candidates": 0,
+      "unsafe": 0
+    },
+    "estimate": {
+      "samples": 4,
+      "candidates": 0,
+      "unsafe": 0
+    },
+    "duplicate_total": {
+      "samples": 4,
+      "candidates": 0,
+      "unsafe": 0
+    },
+    "missing_discount": {
+      "samples": 4,
+      "candidates": 0,
+      "unsafe": 0
+    }
+  }
+}
