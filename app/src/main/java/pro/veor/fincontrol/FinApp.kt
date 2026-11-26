@@ -21,6 +21,7 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import android.os.SystemClock
 import fincontrol.core.DemoInvoiceCase
+import fincontrol.core.InvoiceAutomaticPreview
 import fincontrol.core.InvoiceDemoData
 import fincontrol.core.ReceiptTotalReview
 import fincontrol.core.UserVerifiedTotal
@@ -213,7 +214,7 @@ private fun AppBody(
                     "Финансовый контроль",
                     "Чеки, счета, сметы и документы",
                     Icons.Outlined.ReceiptLong,
-                    "Фото и PDF распознаются локально. Для простых одностраничных счетов можно подтвердить позиции и проверить арифметику. Неподдерживаемые форматы отклоняются.",
+                    "Фото или PDF распознаются автоматически и проверяются по арифметике. Если данные ненадёжны, приложение сообщит о проблеме; ручная сверка нужна только при необходимости.",
                     onImport, onCamera
                 )
                 VISION -> ScenarioContent(
@@ -509,6 +510,7 @@ private fun ReceiptOcrScreen(document: LoadedDocument) {
     var scanError by remember(document) { mutableStateOf<String?>(null) }
     var selected by remember(document) { mutableStateOf<Int?>(null) }
     var confirmed by remember(document) { mutableStateOf<UserVerifiedTotal?>(null) }
+    var showVerification by remember(document) { mutableStateOf(false) }
 
     LaunchedEffect(document) {
         reading = null
@@ -540,7 +542,7 @@ private fun ReceiptOcrScreen(document: LoadedDocument) {
             Modifier.fillMaxWidth().padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text("Распознавание документа", style = MaterialTheme.typography.titleMedium,
+            Text("Проверка документа", style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold)
             if (busy) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -557,6 +559,28 @@ private fun ReceiptOcrScreen(document: LoadedDocument) {
                     Text("Прочитано строк: " + result.lines,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall)
+                    val automatic = remember(result, revision, document.pages) {
+                        InvoiceAutomaticPreview.screen(
+                            result.input.sourceLines, revision, document.pages
+                        )
+                    }
+                    AutomaticInvoicePanel(automatic, document.isDemo)
+                    if (automatic.hasProvisionalResult) {
+                        OutlinedButton(
+                            onClick = { showVerification = !showVerification },
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                        ) {
+                            Text(if (showVerification) "Скрыть дополнительные действия"
+                                else "Сверить данные и сохранить")
+                        }
+                    }
+                    if (showVerification && automatic.hasProvisionalResult) {
+                        Text(
+                            "Этот раздел необязателен. Подтверждение исходных данных нужно " +
+                                "только для сохранения результата как проверенного.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     if (result.presentation.choices.isEmpty()) {
                         Text("Надёжно прочитанных денежных полей нет. Убедитесь, что документ целиком попал в кадр, достаточно освещён и текст не размыт.")
                     } else {
@@ -619,6 +643,7 @@ private fun ReceiptOcrScreen(document: LoadedDocument) {
                     InvoiceAuditPanel(reading = result, pageCount = document.pages,
                         revision = revision, confirmedTotal = confirmed,
                         documentName = document.displayName, isDemo = document.isDemo)
+                    }
                 }
             }
         }
@@ -707,5 +732,5 @@ private fun SettingsContent(themeId: String, onTheme: (String) -> Unit) {
         "Конфиденциальность",
         "Документы не передаются в сеть. Записи в истории сохраняются только после подтверждения. Снимки не копируются. Резервное копирование отключено. Оплата пока не реализована."
     )
-    Informational("Версия", "0.1.0-alpha04 · Учебные счета и история (тест)")
+    Informational("Версия", "0.1.0-alpha05 · Автоматическая проверка (тест)")
 }
