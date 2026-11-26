@@ -1,0 +1,48 @@
+name: Receipt geometry correction research (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  research:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      OMP_NUM_THREADS: "1"
+      OMP_THREAD_LIMIT: "2"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install lightweight test dependencies
+        run: python -m pip install 'numpy==2.4.6' 'Pillow==11.3.0'
+      - name: Check extraction and reject ambiguity before installing models
+        run: |
+          python -m py_compile tools/ocr/semantic_ranker.py tools/ocr/semantic_ranker_run.py tools/ocr/semantic_ranker_v2.py tools/ocr/semantic_ranker_v2_run.py tools/ocr/document_geometry.py tools/ocr/geometry_research_run.py
+          python tools/ocr/ocr_preprocess.py
+          python tools/ocr/total_candidate.py
+          python tools/ocr/document_structure.py
+          python tools/ocr/layout_diagnostics.py
+          python tools/ocr/reread_evidence.py
+          python tools/ocr/semantic_ranker.py
+          python tools/ocr/semantic_ranker_v2.py
+          python tools/ocr/document_geometry.py
+      - name: Install CPU research dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y fonts-dejavu-core
+          python -m pip install 'paddlepaddle==3.2.0' 'paddleocr==3.2.0' 'paddlex==3.2.1' 'pyarrow==21.0.0' 'huggingface-hub==0.34.4' 'Pillow==11.3.0' 'scikit-learn==1.7.2'
+          python -m pip check
+      - name: Train and evaluate semantic models on reserved splits
+        run: python tools/ocr/geometry_research_run.py
+      - name: Preserve aggregate results only
+        if: success() || hashFiles('geometry_*_results.json') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: receipt-geometry-research
+          path: geometry_*_results.json
+          if-no-files-found: error
+          retention-days: 7
