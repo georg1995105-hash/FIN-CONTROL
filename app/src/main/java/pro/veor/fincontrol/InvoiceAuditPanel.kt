@@ -4,6 +4,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -20,7 +24,9 @@ fun InvoiceAuditPanel(
     reading: OcrReading,
     pageCount: Int,
     revision: Long,
-    confirmedTotal: UserVerifiedTotal?
+    confirmedTotal: UserVerifiedTotal?,
+    documentName: String,
+    isDemo: Boolean
 ) {
     val draft = remember(reading, pageCount, revision) {
         InvoicePositionAudit.parse(reading.input.sourceLines, revision, pageCount)
@@ -28,6 +34,16 @@ fun InvoiceAuditPanel(
     var checked by remember(draft) { mutableStateOf(emptySet<Int>()) }
     var complete by remember(draft) { mutableStateOf(false) }
     var audit by remember(draft) { mutableStateOf<AuditResult?>(null) }
+    var savedRecord by remember(draft) { mutableStateOf<Long?>(null) }
+    var isSaving by remember(draft) { mutableStateOf(false) }
+    var saveError by remember(draft) { mutableStateOf<String?>(null) }
+    val context = LocalContext.current.applicationContext
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(confirmedTotal) {
+        audit = null
+        savedRecord = null
+        saveError = null
+    }
     val totalVerified = confirmedTotal != null && draft.printedTotal != null &&
         confirmedTotal.sourceIndex == draft.totalSourceIndex &&
         confirmedTotal.captureRevision == revision &&
@@ -167,6 +183,39 @@ fun InvoiceAuditPanel(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         style = MaterialTheme.typography.bodySmall
                     )
+                    if (result.status != AuditStatus.NEEDS_REVIEW) {
+                        Button(
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                            enabled = !isSaving && savedRecord == null,
+                            onClick = {
+                                isSaving = true
+                                saveError = null
+                                scope.launch {
+                                    try {
+                                        val id = withContext(Dispatchers.IO) {
+                                            LocalAuditHistory.saveConfirmed(
+                                                context, documentName, isDemo, draft,
+                                                checked.toSet(), confirmedTotal, complete, revision
+                                            )
+                                        }
+                                        savedRecord = id
+                                    } catch (e: Exception) {
+                                        saveError = "Не удалось сохранить: " +
+                                            (e.localizedMessage ?: "ошибка хранения")
+                                    } finally { isSaving = false }
+                                }
+                            }
+                        ) {
+                            Text(if (savedRecord != null) "Сохранено в историю"
+                                else if (isSaving) "Сохранение..." else "Сохранить проверку")
+                        }
+                        if (savedRecord != null) {
+                            Text("Проверка сохранена локально. Открой раздел «История».",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodySmall)
+                        }
+                        saveError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
+                    }
                 }
             }
         }

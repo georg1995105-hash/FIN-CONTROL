@@ -20,6 +20,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import android.os.SystemClock
+import fincontrol.core.DemoInvoiceCase
+import fincontrol.core.InvoiceDemoData
 import fincontrol.core.ReceiptTotalReview
 import fincontrol.core.UserVerifiedTotal
 import androidx.compose.ui.Alignment
@@ -88,6 +90,7 @@ fun FinApp(
     error: String?,
     onImport: () -> Unit,
     onCamera: () -> Unit,
+    onDemo: (DemoInvoiceCase) -> Unit,
     onChangePage: (Int) -> Unit,
     onTheme: (String) -> Unit,
     onClearError: () -> Unit
@@ -127,7 +130,7 @@ fun FinApp(
                             modifier = Modifier.weight(1f),
                             page = page, onPage = { page = it }, document = document,
                             isLoading = isLoading, error = error,
-                            onImport = onImport, onCamera = onCamera,
+                            onImport = onImport, onCamera = onCamera, onDemo = onDemo,
                             onChangePage = onChangePage, onTheme = onTheme,
                             themeId = themeId, onClearError = onClearError
                         )
@@ -152,7 +155,7 @@ fun FinApp(
                             modifier = Modifier.padding(padding),
                             page = page, onPage = { page = it }, document = document,
                             isLoading = isLoading, error = error,
-                            onImport = onImport, onCamera = onCamera,
+                            onImport = onImport, onCamera = onCamera, onDemo = onDemo,
                             onChangePage = onChangePage, onTheme = onTheme,
                             themeId = themeId, onClearError = onClearError
                         )
@@ -173,6 +176,7 @@ private fun AppBody(
     error: String?,
     onImport: () -> Unit,
     onCamera: () -> Unit,
+    onDemo: (DemoInvoiceCase) -> Unit,
     onChangePage: (Int) -> Unit,
     onTheme: (String) -> Unit,
     themeId: String,
@@ -204,12 +208,12 @@ private fun AppBody(
                 }
             }
             when (page) {
-                HOME -> HomeContent(onPage, onCamera, onImport)
+                HOME -> HomeContent(onPage, onCamera, onImport, onDemo)
                 AUDIT -> ScenarioContent(
                     "Финансовый контроль",
                     "Чеки, счета, сметы и документы",
                     Icons.Outlined.ReceiptLong,
-                    "Импортируйте фото или PDF. На текущем этапе доступен реальный просмотр документа; локальное распознавание и анализ сумм ещё не интегрированы.",
+                    "Фото и PDF распознаются локально. Для простых одностраничных счетов можно подтвердить позиции и проверить арифметику. Неподдерживаемые форматы отклоняются.",
                     onImport, onCamera
                 )
                 VISION -> ScenarioContent(
@@ -227,10 +231,7 @@ private fun AppBody(
                     onImport, onCamera
                 )
                 DOCUMENT -> DocumentContent(document, onImport, onCamera, onChangePage)
-                HISTORY -> EmptyContent(
-                    Icons.Outlined.History, "История проверок",
-                    "Проверки ещё не выполняются, поэтому история пустая. Мы не создаём фиктивные записи."
-                )
+                HISTORY -> AuditHistoryScreen()
                 PRO -> EmptyContent(
                     Icons.Outlined.WorkspacePremium, "FIN CONTROL PRO",
                     "Оплата и лицензирование пока не подключены. Покупки не предлагаются до проверки всех функций и условий."
@@ -274,7 +275,10 @@ private fun Header(page: String, onPage: (String) -> Unit) {
 }
 
 @Composable
-private fun HomeContent(onPage: (String) -> Unit, onCamera: () -> Unit, onImport: () -> Unit) {
+private fun HomeContent(
+    onPage: (String) -> Unit, onCamera: () -> Unit, onImport: () -> Unit,
+    onDemo: (DemoInvoiceCase) -> Unit
+) {
     Text(
         "Контроль без догадок",
         style = MaterialTheme.typography.headlineSmall,
@@ -317,9 +321,27 @@ private fun HomeContent(onPage: (String) -> Unit, onCamera: () -> Unit, onImport
             Text("Импорт")
         }
     }
+    Spacer(Modifier.height(6.dp))
+    Text("Проверить без своих документов",
+        style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+    Text("Два вымышленных счёта проходят через настоящий офлайн-OCR. " +
+        "Их нельзя использовать для оплаты.",
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        style = MaterialTheme.typography.bodySmall)
+    OutlinedButton(
+        onClick = { onDemo(InvoiceDemoData.correct) },
+        modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
+        shape = RoundedCornerShape(14.dp)
+    ) { Text("Учебный счёт — без расхождений") }
+    OutlinedButton(
+        onClick = { onDemo(InvoiceDemoData.discrepancy) },
+        modifier = Modifier.fillMaxWidth().heightIn(min = 50.dp),
+        shape = RoundedCornerShape(14.dp)
+    ) { Text("Учебный счёт — с арифметической ошибкой") }
     Informational(
-        "Этап разработки",
-        "Фото и PDF открываются локально. Автоматический финансовый анализ и подсчёт объектов пока не доступны."
+        "Тестовый этап",
+        "Проверка некоторых простых счетов доступна после ручной сверки. " +
+            "Полноценное распознавание любых документов и компьютерное зрение ещё разрабатываются."
     )
 }
 
@@ -421,6 +443,11 @@ private fun DocumentContent(
     }
     Text(document.displayName, style = MaterialTheme.typography.titleMedium,
         maxLines = 2, overflow = TextOverflow.Ellipsis)
+    if (document.isDemo) {
+        Text("УЧЕБНЫЙ ПРИМЕР · все данные вымышлены, не для оплаты",
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.labelMedium)
+    }
     Text(
         document.kind + if (document.pages > 1)
             " · Страница " + (document.pageIndex + 1) + " из " + document.pages
@@ -590,7 +617,8 @@ private fun ReceiptOcrScreen(document: LoadedDocument) {
                         }
                     }
                     InvoiceAuditPanel(reading = result, pageCount = document.pages,
-                        revision = revision, confirmedTotal = confirmed)
+                        revision = revision, confirmedTotal = confirmed,
+                        documentName = document.displayName, isDemo = document.isDemo)
                 }
             }
         }
@@ -677,7 +705,7 @@ private fun SettingsContent(themeId: String, onTheme: (String) -> Unit) {
     Spacer(Modifier.height(8.dp))
     Informational(
         "Конфиденциальность",
-        "Документы не передаются в сеть. Резервное копирование отключено. История и оплата пока не реализованы."
+        "Документы не передаются в сеть. Записи в истории сохраняются только после подтверждения. Снимки не копируются. Резервное копирование отключено. Оплата пока не реализована."
     )
-    Informational("Версия", "0.1.0-alpha03 · Сверка позиций (тест)")
+    Informational("Версия", "0.1.0-alpha04 · Учебные счета и история (тест)")
 }

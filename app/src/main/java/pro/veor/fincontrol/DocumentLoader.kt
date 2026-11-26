@@ -17,7 +17,8 @@ data class LoadedDocument(
     val displayName: String,
     val kind: String,
     val pages: Int,
-    val pageIndex: Int
+    val pageIndex: Int,
+    val isDemo: Boolean = false
 )
 
 /**
