@@ -100,7 +100,7 @@ public final class LocalTransferHub {
     LocalHttpsServer.reply(out,code,"application/json; charset=utf-8",
       j.toString().getBytes(StandardCharsets.UTF_8));
   }
-  private static void fail(OutputStream out,int code,String reason)throws IOException{
+  private static void fail(OutputStream out,int code,String reason)throws Exception{
     reply(out,code,new JSONObject().put("error",reason));
   }
   private static JSONObject body(LocalHttpsServer.Request r)throws IOException {
