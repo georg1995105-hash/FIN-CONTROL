@@ -38,7 +38,7 @@ jobs:
             experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java \
             experimental/filemanager-plus/androidsrc/fmplus/SettingsBackupActivity.java
           find build/java -name '*.class' > build/sources.txt
-          "$d8" --min-api 26 --lib "$platform" --output build/dex $(cat build/sources.txt)
+          "$d8" --min-api 21 --lib "$platform" --output build/dex $(cat build/sources.txt)
           test -s build/dex/classes.dex
           mkdir -p build/tools
           tool_dir="$(dirname "$d8")"
