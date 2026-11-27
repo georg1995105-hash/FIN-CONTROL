@@ -10,6 +10,9 @@ import android.os.IBinder;
 /** Foreground session lifecycle; close listener and revoke all sessions on Stop. */
 public final class LocalTransferService extends Service {
   private static final String CHANNEL="fmplus-local-transfer";
+  private final Object lifecycleLock=new Object();
+  private boolean destroyed;
+
   @Override public void onCreate() {
     super.onCreate();
     NotificationManager manager=(NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
@@ -32,11 +35,20 @@ public final class LocalTransferService extends Service {
   @Override public int onStartCommand(Intent intent,int flags,int startId) {
     if(intent!=null && "fmplus.stop".equals(intent.getAction())){stopSelf();return START_NOT_STICKY;}
     new Thread(()->{
-      try {LocalTransferHub.start(this);}
-      catch(Exception error){stopSelf();}
+      synchronized(lifecycleLock) {
+        if(destroyed)return;
+        try {LocalTransferHub.start(this);}
+        catch(Exception error){if(!destroyed)stopSelf();}
+      }
     },"fmplus-server-start").start();
     return START_NOT_STICKY;
   }
-  @Override public void onDestroy(){LocalTransferHub.stop();super.onDestroy();}
+  @Override public void onDestroy(){
+    synchronized(lifecycleLock){
+      destroyed=true;
+      LocalTransferHub.stop();
+    }
+    super.onDestroy();
+  }
   @Override public IBinder onBind(Intent intent){return null;}
 }
