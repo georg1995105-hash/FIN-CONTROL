@@ -35,7 +35,8 @@ jobs:
             experimental/filemanager-plus/src/fmplus/SafeTransfer.java \
             experimental/filemanager-plus/src/fmplus/QrMatrix.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \
-            experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java
+            experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java \
+            experimental/filemanager-plus/androidsrc/fmplus/SettingsBackupActivity.java
           find build/java -name '*.class' > build/sources.txt
           "$d8" --min-api 26 --lib "$platform" --output build/dex $(cat build/sources.txt)
           test -s build/dex/classes.dex
