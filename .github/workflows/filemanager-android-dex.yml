@@ -39,12 +39,21 @@ jobs:
           find build/java -name '*.class' > build/sources.txt
           "$d8" --min-api 26 --lib "$platform" --output build/dex $(cat build/sources.txt)
           test -s build/dex/classes.dex
+          mkdir -p build/tools
+          tool_dir="$(dirname "$d8")"
+          test -f "$tool_dir/lib/apksigner.jar"
+          test -x "$tool_dir/zipalign"
+          cp "$tool_dir/lib/apksigner.jar" build/tools/apksigner.jar
+          cp "$tool_dir/zipalign" build/tools/zipalign
           cp "$platform" build/android.jar
           echo "Built DEX: $(wc -c < build/dex/classes.dex) bytes"
           sha256sum build/dex/classes.dex
       - uses: actions/upload-artifact@v4
         with:
           name: filemanager-android-features-dex
-          path: build/dex/classes.dex
+          path: |
+            build/dex/classes.dex
+            build/tools/apksigner.jar
+            build/tools/zipalign
           retention-days: 7
           if-no-files-found: error
