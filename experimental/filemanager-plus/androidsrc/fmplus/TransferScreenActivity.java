@@ -50,11 +50,11 @@ public final class TransferScreenActivity extends Activity {
     selected=label(body,"Не выбрано файлов для скачивания",15);
     button(body,"Выбрать файлы для скачивания",v->pick());
     button(body,"Очистить выбранные файлы",v->{LocalTransferHub.clearShared();selected.setText("Файлы скрыты");});
-    button(body,"Открыть полученные файлы",v->{
-      Intent intent=new Intent(Intent.ACTION_VIEW);
-      intent.setType("*/*");intent.setAction(Intent.ACTION_GET_CONTENT);
-      intent.addCategory(Intent.CATEGORY_OPENABLE);
-      try{startActivityForResult(intent,PICK_FILES+1);}catch(Exception e){status.setText("Используйте раздел «Загрузки/Передача»");}
+    button(body,"Куда сохраняются полученные файлы",v->{
+      boolean shared=Build.VERSION.SDK_INT<30||android.os.Environment.isExternalStorageManager();
+      String folder=shared?"Загрузки/Передача":"Память приложения/received (доступ без разрешения на все файлы)";
+      new android.app.AlertDialog.Builder(this).setTitle("Папка полученных файлов")
+        .setMessage(folder).setPositiveButton("ОК",null).show();
     });
     button(body,"Остановить передачу",v->{
       stopService(new Intent(this,LocalTransferService.class));
@@ -100,11 +100,19 @@ public final class TransferScreenActivity extends Activity {
     if(clip!=null)for(int i=0;i<clip.getItemCount()&&list.size()<100;i++){
       Uri uri=clip.getItemAt(i).getUri();if(uri!=null&&!list.contains(uri))list.add(uri);
     }
-    try{
-      int count=LocalTransferHub.share(this,list);
-      selected.setText("Доступно для скачивания: "+count);
-      status.setText("Выбранные файлы видны на странице QR");
-    }catch(Exception e){status.setText("Не удалось выбрать файлы: "+e.getMessage());}
+    selected.setText("Подготовка выбранных файлов…");
+    new Thread(()->{
+      try {
+        final int count=LocalTransferHub.share(this,list);
+        runOnUiThread(()->{
+          if(closed)return;
+          selected.setText("Доступно для скачивания: "+count);
+          status.setText("Выбранные файлы видны на странице QR");
+        });
+      } catch(Exception error){
+        runOnUiThread(()->{if(!closed)status.setText("Не удалось выбрать файлы: "+error.getMessage());});
+      }
+    },"fmplus-share-documents").start();
   }
   @Override protected void onDestroy(){closed=true;super.onDestroy();}
 }
