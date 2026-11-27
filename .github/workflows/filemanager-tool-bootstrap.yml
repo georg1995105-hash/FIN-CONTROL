@@ -1,0 +1,28 @@
+name: File Manager APK tooling
+on:
+  push:
+    branches:
+      - work/filemanager-plus-rebuild-20261127
+    paths:
+      - '.github/workflows/filemanager-tool-bootstrap.yml'
+  workflow_dispatch:
+jobs:
+  apktool:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Fetch official Apktool release
+        run: |
+          set -euo pipefail
+          mkdir -p toolbox
+          curl --retry 3 -fLSs 'https://github.com/iBotPeaches/Apktool/releases/download/v3.0.3/apktool_3.0.3.jar' -o toolbox/apktool_3.0.3.jar
+          test "$(wc -c < toolbox/apktool_3.0.3.jar)" -eq 15478013
+          java -jar toolbox/apktool_3.0.3.jar --version
+          sha256sum toolbox/apktool_3.0.3.jar > toolbox/sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: apktool-3.0.3
+          path: toolbox/
+          retention-days: 7
+          if-no-files-found: error
