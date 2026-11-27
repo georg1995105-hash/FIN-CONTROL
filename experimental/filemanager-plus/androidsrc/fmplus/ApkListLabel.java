@@ -49,15 +49,13 @@ public final class ApkListLabel {
     // Keep very long APK filenames from expanding rows and causing scroll jumps.
     view.setMaxLines(2);
     view.setEllipsize(TextUtils.TruncateAt.END);
-    // Global list icon toggle, but do not hide icons in a grid.
-    if (icon != null && !isGridItem(view)) {
-      ViewParent parent = icon.getParent();
-      if (parent instanceof View) {
-        boolean visible = context.getSharedPreferences(
-            context.getPackageName() + "_preferences", Context.MODE_PRIVATE)
-            .getBoolean("fmplus_show_icons", true);
-        ((View) parent).setVisibility(visible ? View.VISIBLE : View.GONE);
-      }
+    // Hide only the icon, never its parent: the parent may be the entire file row.
+    // Recycled grid rows must always restore icon visibility.
+    if (icon != null) {
+      boolean visible = context.getSharedPreferences(
+          context.getPackageName() + "_preferences", Context.MODE_PRIVATE)
+          .getBoolean("fmplus_show_icons", true);
+      icon.setVisibility(isGridItem(view) || visible ? View.VISIBLE : View.GONE);
     }
     if (filename == null || !filename.toLowerCase(Locale.ROOT).endsWith(".apk")
         || path == null || !path.startsWith("/")) return;
