@@ -33,6 +33,7 @@ public final class SafeTransfer {
     if(!Files.isDirectory(parent))throw new IOException("Destination directory missing");
     if(stop.requested())throw new CancellationException("Cancelled");
     long total=Files.size(source),done=0;
+    java.nio.file.attribute.FileTime sourceModified = Files.getLastModifiedTime(source,LinkOption.NOFOLLOW_LINKS);
     long start=System.nanoTime(),lastNotify=0;
     Path partial=Files.createTempFile(parent,".fmplus-copy-",".part");
     try {
@@ -56,11 +57,15 @@ public final class SafeTransfer {
       }
       if(stop.requested())throw new CancellationException("Cancelled");
       // Reject source modification while copying instead of silently publishing a truncated file.
-      if(Files.size(source)!=done)throw new IOException("Source file changed while copying");
-      try {
-        Files.move(partial,destination,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING);
-      } catch(AtomicMoveNotSupportedException e) {
-        Files.move(partial,destination,StandardCopyOption.REPLACE_EXISTING);
+      if(Files.size(source)!=done || !sourceModified.equals(Files.getLastModifiedTime(source,LinkOption.NOFOLLOW_LINKS)))
+        throw new IOException("Source file changed while copying");
+      if(progress!=null && total==0)progress.onProgress(0,0,0,0);
+      if(conflict==Conflict.OVERWRITE){
+        try { Files.move(partial,destination,StandardCopyOption.ATOMIC_MOVE,StandardCopyOption.REPLACE_EXISTING); }
+        catch(AtomicMoveNotSupportedException e) { Files.move(partial,destination,StandardCopyOption.REPLACE_EXISTING); }
+      } else {
+        // Never replace a concurrently created target when the user chose SKIP or KEEP_BOTH.
+        Files.move(partial,destination);
       }
       return new Result(Status.COPIED,destination,done);
     } finally {Files.deleteIfExists(partial);}
