@@ -6,7 +6,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.time.Instant;
 import java.util.*;
 import java.util.zip.*;
 
@@ -53,7 +52,7 @@ public final class FeatureCore {
   }
 
   public static String normalizePath(String path) {
-    if (path == null || path.isBlank()) throw new IllegalArgumentException("Empty folder");
+    if (path == null || path.trim().isEmpty()) throw new IllegalArgumentException("Empty folder");
     String clean = path.replace('\\', '/').replaceAll("/+", "/");
     while (clean.length() > 1 && clean.endsWith("/")) clean = clean.substring(0, clean.length() - 1);
     // Do not collapse URI scheme (content:// or smb://) or decode encoded path segments.
