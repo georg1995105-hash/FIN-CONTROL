@@ -38,3 +38,11 @@
 - Неустранённый блокер: Google Drive отображает ошибку подключения. В переподписанном приложении другой SHA-1 сертификат, чем у оригинального File Manager+; по документации Google OAuth для Android проверяет пакет и сертификат. Утверждать первопричину без logcat нельзя. Без зарегистрированного OAuth-клиента/альтернативной интеграции работоспособность Google Drive не доказана.
 - Остаются непроверенными на устройствах: все формы списка и сортировки в специальных разделах (Новые файлы, анализ), Android TV D-pad, скорость миниатюр и копирования, FTP через QR с другого устройства, облако.
 - Приватный APK/ключ не публиковались в GitHub; `main` не затронута. Готовым релизом V7 не считать.
+
+## V8.1 targeted repair — 28.11.2026
+- Confirmed in decoded V7: `Lax/g7/n0;->M3()Z` returned a hidden Apply-to-all checkbox state. Even though XML hid the checkbox, code could still copy preferences globally. V8.1 forces this return to false.
+- `Lax/z7/f;->e(...)` discarded a folder suffix in Analysis mode. V8.1 preserves the suffix when a folder path exists. This does **not** make the analysis screen support new view layouts by itself.
+- Two methods patched with three changed instruction bytes; DEX integrity hashes recomputed. Other 1,992 APK entries unchanged; versionCode 2403088, minSdk 21, same test signer as V7. Full rewrite of 54,208 methods avoided. The decoder round-trip confirmed the intended bytecode and no new branch-verifier warnings relative to V7.
+- Script `scripts/surgical_prefs_v81.py` reproduces the **unsigned** patch from a validated V7 test APK. Test signing key/APK are not committed.
+- Not claimed finished: current file-manager preferences still require Android runtime regression tests; analysis uses specialized layouts; Google Drive login remains unverified. Comparing source signer to custom signer confirms mismatch (upstream certificate SHA-1 `60:C2:CA:51:52:29:DA:14:CA:A5:52:7A:7B:8A:A8:6D:E3:BE:E7:3C`, custom SHA-1 `94:A4:55:E1:BC:8B:C0:39:84:CF:13:B0:F3:84:BD:A2:E2:A1:B2:14`), so Google authentication requires provider-compatible credentials or another supported authorization method. Signature mismatch is an evidence-backed risk, **not an established cause without logcat**.
+- No verified Android hardware/emulator in this execution environment. Don't label experimental APK production-ready.
