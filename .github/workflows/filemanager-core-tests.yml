@@ -74,4 +74,6 @@ jobs:
             -d experimental/filemanager-plus/build/android \
             experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrLocalTransfer.java \
-            experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java
+            experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \
+            experimental/filemanager-plus/androidsrc/fmplus/LocalTransferHub.java \
+            experimental/filemanager-plus/androidsrc/fmplus/LocalTransferService.java
