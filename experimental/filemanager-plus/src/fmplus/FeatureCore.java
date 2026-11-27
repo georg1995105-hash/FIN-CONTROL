@@ -18,14 +18,29 @@ public final class FeatureCore {
     public final Sort sort;
     public final boolean descending;
     public final Thumbnails thumbnails;
+    public final int iconSizeDp;
+    public final boolean showIcons;
+    /** Compatibility constructor for settings written before schema 2. */
     public FolderView(View view, Sort sort, boolean descending, Thumbnails thumbnails) {
+      this(view, sort, descending, thumbnails, 48, true);
+    }
+    public FolderView(View view, Sort sort, boolean descending, Thumbnails thumbnails,
+                      int iconSizeDp, boolean showIcons) {
       this.view = Objects.requireNonNull(view);
       this.sort = Objects.requireNonNull(sort);
       this.descending = descending;
       this.thumbnails = Objects.requireNonNull(thumbnails);
+      if (iconSizeDp < 24 || iconSizeDp > 160)
+        throw new IllegalArgumentException("Icon size must be 24..160 dp");
+      this.iconSizeDp = iconSizeDp;
+      this.showIcons = showIcons;
+    }
+    /** First use: detailed list, before any explicit per-folder choice. */
+    public static FolderView initialDefault() {
+      return new FolderView(View.DETAILED, Sort.NAME, false, Thumbnails.ON, 48, true);
     }
     public static FolderView downloadsDefault() {
-      return new FolderView(View.DETAILED, Sort.DATE, true, Thumbnails.ON);
+      return new FolderView(View.DETAILED, Sort.DATE, true, Thumbnails.ON, 48, true);
     }
   }
 
@@ -66,7 +81,7 @@ public final class FeatureCore {
   /** Exact, whitelisted, versioned backup. Does not export credentials or arbitrary app preferences. */
   public static byte[] exportSettings(Map<String, FolderView> folders) throws IOException {
     if (folders.size() > 10000) throw new IllegalArgumentException("Too many folders");
-    Properties props = new Properties(); props.setProperty("schema", "1");
+    Properties props = new Properties(); props.setProperty("schema", "2");
     int i=0;
     for (Map.Entry<String, FolderView> e : new TreeMap<>(folders).entrySet()) {
       String path = normalizePath(e.getKey()); FolderView v = e.getValue();
@@ -76,6 +91,8 @@ public final class FeatureCore {
       props.setProperty(prefix + "sort", v.sort.name());
       props.setProperty(prefix + "desc", Boolean.toString(v.descending));
       props.setProperty(prefix + "thumbs", v.thumbnails.name());
+      props.setProperty(prefix + "iconSizeDp", Integer.toString(v.iconSizeDp));
+      props.setProperty(prefix + "showIcons", Boolean.toString(v.showIcons));
     }
     props.setProperty("count", String.valueOf(i));
     ByteArrayOutputStream text = new ByteArrayOutputStream(); props.store(text,"FileManager+ safe folder display backup");
@@ -108,7 +125,9 @@ public final class FeatureCore {
     if (payload==null || checksum==null || !MessageDigest.isEqual(hex(sha256(payload)).getBytes(StandardCharsets.US_ASCII),checksum))
       throw new IOException("Missing or invalid checksum");
     Properties props = new Properties(); props.load(new ByteArrayInputStream(payload));
-    if (!"1".equals(props.getProperty("schema"))) throw new IOException("Unsupported schema");
+    String schema = props.getProperty("schema");
+    if (!"1".equals(schema) && !"2".equals(schema))
+      throw new IOException("Unsupported schema");
     int count;
     try { count=Integer.parseInt(props.getProperty("count", "-1")); }
     catch (NumberFormatException e) { throw new IOException("Bad count",e); }
@@ -117,13 +136,25 @@ public final class FeatureCore {
     try {
       for (int i=0;i<count;i++) {
         String p="folder."+i+"."; String path=normalizePath(props.getProperty(p+"path"));
-        FolderView fv=new FolderView(View.valueOf(props.getProperty(p+"view")),Sort.valueOf(props.getProperty(p+"sort")),
-          Boolean.parseBoolean(props.getProperty(p+"desc")),Thumbnails.valueOf(props.getProperty(p+"thumbs")));
+        boolean descending = parseBooleanStrict(props.getProperty(p+"desc"));
+        boolean showIcons = "1".equals(schema) || parseBooleanStrict(props.getProperty(p+"showIcons"));
+        int iconSize = "1".equals(schema) ? 48 : Integer.parseInt(props.getProperty(p+"iconSizeDp"));
+        FolderView fv = new FolderView(
+          View.valueOf(props.getProperty(p+"view")),
+          Sort.valueOf(props.getProperty(p+"sort")),
+          descending, Thumbnails.valueOf(props.getProperty(p+"thumbs")), iconSize, showIcons);
         if (result.put(path,fv)!=null) throw new IOException("Duplicate path");
       }
     } catch (NullPointerException|IllegalArgumentException e) { throw new IOException("Invalid settings",e); }
-    if (props.size() != 2 + count*5) throw new IOException("Unexpected settings");
+    if (props.size() != 2 + count * ("1".equals(schema) ? 5 : 7))
+      throw new IOException("Unexpected settings");
     return result;
+  }
+
+  private static boolean parseBooleanStrict(String value) {
+    if ("true".equals(value)) return true;
+    if ("false".equals(value)) return false;
+    throw new IllegalArgumentException("Invalid boolean setting");
   }
 
   private static byte[] sha256(byte[] b) {

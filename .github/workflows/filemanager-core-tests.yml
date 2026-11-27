@@ -25,6 +25,8 @@ jobs:
           javac -encoding UTF-8 -d build src/fmplus/*.java test/fmplus/*.java
       - name: Test folder settings, backup, QR payload, TV focus
         run: java -cp experimental/filemanager-plus/build fmplus.FeatureCoreTest
+      - name: Test independent per-folder view, icon size and backup v1 to v2
+        run: java -cp experimental/filemanager-plus/build fmplus.ViewPersistenceTest
       - name: Test Transfer-style LAN QR and bearer session lifecycle
         run: java -cp experimental/filemanager-plus/build fmplus.LanPairingTest
       - name: Test source-transplanted safe incoming transfer

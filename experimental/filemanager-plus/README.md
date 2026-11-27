@@ -35,3 +35,5 @@ Source audit and exact endpoint mapping: [TRANSFER_SOURCE_AUDIT.md](TRANSFER_SOU
 - Mirrored, separately executable JVM security tests `IncomingTransferTest` and `HttpTransportTest`.
 
 These portable sources are not integrated in File Manager+ 3.8.5 APK. The old FTP server remains unchanged in users' installed V8.2 until an independently tested replacement APK exists.
+
+Per-folder display model now stores **detailed/list/grid, sort/direction, thumbnails, icon visibility and icon size (24–160dp)**; backup schema 2 migrates schema 1 with unchanged defaults. The real File Manager+ settings integration remains pending original APK access.
