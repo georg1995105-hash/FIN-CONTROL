@@ -8,6 +8,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.LruCache;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.view.View;
+import android.view.ViewParent;
 import java.io.File;
 import java.util.Locale;
 import java.util.WeakHashMap;
@@ -29,9 +32,19 @@ public final class ApkListLabel {
   private static final WeakHashMap<TextView, String> BOUND = new WeakHashMap<>();
   private static final LruCache<String, String> CACHE = new LruCache<>(128);
 
-  public static void bind(Context context, String filename, String path, TextView view) {
+  public static void bind(Context context, String filename, String path, TextView view, ImageView icon) {
     if (view == null) return;
     BOUND.remove(view);
+    // Global list icon toggle; do not hide icons in grids, which would become blank.
+    if (icon != null && !view.getClass().getName().contains("GridFilename")) {
+      ViewParent parent = icon.getParent();
+      if (parent instanceof View) {
+        boolean visible = context.getSharedPreferences(
+            context.getPackageName() + "_preferences", Context.MODE_PRIVATE)
+            .getBoolean("fmplus_show_icons", true);
+        ((View) parent).setVisibility(visible ? View.VISIBLE : View.GONE);
+      }
+    }
     if (filename == null || !filename.toLowerCase(Locale.ROOT).endsWith(".apk")
         || path == null || !path.startsWith("/")) return;
     File file = new File(path);
