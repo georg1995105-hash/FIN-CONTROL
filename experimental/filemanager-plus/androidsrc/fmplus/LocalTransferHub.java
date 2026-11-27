@@ -1,6 +1,10 @@
 package fmplus;
 
 import android.content.Context;
+import android.content.ContentResolver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.provider.OpenableColumns;
 import android.os.Build;
 import android.os.Environment;
 import android.media.MediaScannerConnection;
@@ -31,6 +35,62 @@ public final class LocalTransferHub {
   private final SecureRandom rng = new SecureRandom();
   private final LanPairing.Sessions sessions = new LanPairing.Sessions(rng);
   private final Map<String,String> batches = new ConcurrentHashMap<>();
+  private final Map<String,SharedFile> shared = new ConcurrentHashMap<>();
+  private final Map<String,Ticket> tickets = new ConcurrentHashMap<>();
+  private static final long TICKET_TTL=120_000L;
+  private static final class SharedFile {
+    final Uri uri; final String name; final long size;
+    SharedFile(Uri uri,String name,long size){this.uri=uri;this.name=name;this.size=size;}
+  }
+  private static final class Ticket {
+    final String token, fileId; final long expires;
+    Ticket(String token,String fileId,long expires){
+      this.token=token;this.fileId=fileId;this.expires=expires;
+    }
+  }
+  /**
+   * Only a user-driven Android document picker can populate this allowlist.
+   * Do not infer roots or serve the entire external storage.
+   */
+  public static synchronized int share(Context source,List<Uri> uris) throws IOException {
+    if(active==null||active.listener==null)throw new IOException("Сначала включите передачу");
+    if(uris==null||uris.isEmpty()||uris.size()>100)throw new IOException("Выберите от 1 до 100 файлов");
+    LocalTransferHub hub=active;
+    LinkedHashMap<String,SharedFile> selected=new LinkedHashMap<>();
+    ContentResolver resolver=source.getContentResolver();
+    for(Uri uri:uris){
+      if(uri==null||!"content".equals(uri.getScheme()))
+        throw new IOException("Неверный тип выбранного файла");
+      String name=null;long size=-1;
+      try(Cursor cursor=resolver.query(uri,
+          new String[]{OpenableColumns.DISPLAY_NAME,OpenableColumns.SIZE},null,null,null)){
+        if(cursor!=null&&cursor.moveToFirst()){
+          int n=cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+          int s=cursor.getColumnIndex(OpenableColumns.SIZE);
+          if(n>=0&&!cursor.isNull(n))name=cursor.getString(n);
+          if(s>=0&&!cursor.isNull(s))size=cursor.getLong(s);
+        }
+      }catch(SecurityException ex){throw new IOException("Нет доступа к выбранному файлу",ex);}
+      if(name==null)name=uri.getLastPathSegment();
+      LanIncomingFile.validatePath(name);
+      if(name.contains("/"))throw new IOException("Неверное имя документа");
+      if(size<0)throw new IOException("Размер файла неизвестен: "+name);
+      try(InputStream input=resolver.openInputStream(uri)){
+        if(input==null)throw new IOException("Файл недоступен: "+name);
+      }
+      selected.put(hub.id(),new SharedFile(uri,name,size));
+    }
+    synchronized(hub){
+      hub.shared.clear();
+      hub.shared.putAll(selected);
+      hub.tickets.clear();
+    }
+    return selected.size();
+  }
+  public static synchronized void clearShared() {
+    if(active==null)return;
+    synchronized(active){active.shared.clear();active.tickets.clear();}
+  }
   private final Map<String,Upload> uploads = new ConcurrentHashMap<>();
   private LocalHttpsServer listener;
   private Thread listenerThread;
@@ -90,7 +150,7 @@ public final class LocalTransferHub {
   public static synchronized void stop(){
     if(active==null)return;
     LocalTransferHub hub=active;active=null;
-    hub.listener.close();hub.sessions.stop();hub.batches.clear();
+    hub.listener.close();hub.sessions.stop();hub.batches.clear();hub.tickets.clear();hub.shared.clear();
     for(Upload u:hub.uploads.values())try{u.receiver.close();}catch(IOException ignored){}
     hub.uploads.clear();
   }
@@ -143,12 +203,53 @@ public final class LocalTransferHub {
         String request=r.path.substring("/pair/".length());
         reply(out,200,new JSONObject().put("token",sessions.claim(request,now())));return;
       }
+      // A download ticket is a single-purpose, short-lived, high-entropy secret.
+      // An HTML <a> cannot attach Authorization headers.
+      if(r.path.startsWith("/download/")&&r.method.equals("GET")){
+        String value=r.path.substring("/download/".length());
+        Ticket ticket=tickets.get(value);
+        if(ticket==null||ticket.expires<=now()||!sessions.authorized(ticket.token,now())){
+          tickets.remove(value);fail(out,404,"Ссылка истекла");return;
+        }
+        SharedFile selected=shared.get(ticket.fileId);
+        if(selected==null){fail(out,404,"Файл больше не доступен");return;}
+        ContentResolver resolver=app.getContentResolver();
+        try(InputStream input=resolver.openInputStream(selected.uri)){
+          if(input==null)throw new FileNotFoundException("Файл недоступен");
+          LocalHttpsServer.headers(out,200,"application/octet-stream",selected.size);
+          byte[] chunk=new byte[65536];long left=selected.size;
+          while(left>0){
+            int n=input.read(chunk,0,(int)Math.min(chunk.length,left));
+            if(n<0)throw new EOFException("Файл изменился во время отправки");
+            if(n==0)continue;
+            out.write(chunk,0,n);left-=n;
+          }
+          out.flush();
+        }
+        return;
+      }
       String h=r.headers.get("authorization");
       String token=(h!=null && h.startsWith("Bearer "))?h.substring(7):"";
       if(!sessions.authorized(token,now())){fail(out,401,"Подключение истекло");return;}
       if(r.path.equals("/files")&&r.method.equals("GET")){
-        // No arbitrary filesystem exposure; publication of selected files requires a separate integration.
-        reply(out,200,new JSONObject().put("files",new JSONArray()));return;
+        JSONArray files=new JSONArray();
+        for(Map.Entry<String,SharedFile> entry:shared.entrySet()){
+          SharedFile f=entry.getValue();
+          files.put(new JSONObject().put("id",entry.getKey()).put("name",f.name).put("size",f.size));
+        }
+        reply(out,200,new JSONObject().put("files",files));return;
+      }
+      if(r.path.startsWith("/ticket/")&&r.method.equals("POST")){
+        String file=r.path.substring("/ticket/".length());
+        if(!shared.containsKey(file)){fail(out,404,"Файл не выбран");return;}
+        if(tickets.size()>=256){
+          for(Map.Entry<String,Ticket> entry:tickets.entrySet())
+            if(entry.getValue().expires<=now())tickets.remove(entry.getKey(),entry.getValue());
+          if(tickets.size()>=256){fail(out,429,"Лимит ссылок");return;}
+        }
+        String id=id();
+        tickets.put(id,new Ticket(token,file,now()+TICKET_TTL));
+        reply(out,200,new JSONObject().put("url","/download/"+id));return;
       }
       if(r.path.equals("/batch")&&r.method.equals("POST")){
         if(batches.size()>=100){fail(out,429,"Лимит отправок");return;}
