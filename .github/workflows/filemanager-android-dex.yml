@@ -39,6 +39,8 @@ jobs:
             experimental/filemanager-plus/src/fmplus/QrMatrix.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrLocalTransfer.java \
+            experimental/filemanager-plus/androidsrc/fmplus/LocalTransferHub.java \
+            experimental/filemanager-plus/androidsrc/fmplus/LocalTransferService.java \
             experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java \
             experimental/filemanager-plus/androidsrc/fmplus/SettingsBackupActivity.java \
             experimental/filemanager-plus/androidsrc/fmplus/ApkListLabel.java
@@ -61,5 +63,6 @@ jobs:
             build/dex/classes.dex
             build/tools/apksigner.jar
             build/tools/zipalign
+            experimental/filemanager-plus/browser/
           retention-days: 7
           if-no-files-found: error
