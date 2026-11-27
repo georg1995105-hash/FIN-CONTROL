@@ -44,6 +44,36 @@ public final class QrExistingServer {
         || (n[0] == 192 && n[1] == 168) || (n[0] == 169 && n[1] == 254);
   }
 
+  /** Show pairing QR directly on the running FTP screen; preserve manual fallback on error. */
+  public static void render(ImageView image, String serverUrl, String password) {
+    if (image == null) return;
+    android.view.View credentials = image.getRootView().findViewById(0x7f0a0376);
+    try {
+      String payload = buildUri(serverUrl, password);
+      QrMatrix qr = QrMatrix.encode(payload);
+      final int scale = 7, border = 4, side = (QrMatrix.SIZE + border * 2) * scale;
+      Bitmap bitmap = Bitmap.createBitmap(side, side, Bitmap.Config.ARGB_8888);
+      bitmap.eraseColor(Color.WHITE);
+      for (int y = 0; y < QrMatrix.SIZE; y++) {
+        for (int x = 0; x < QrMatrix.SIZE; x++) {
+          if (qr.get(x, y)) {
+            int left = (x + border) * scale, top = (y + border) * scale;
+            for (int yy = 0; yy < scale; yy++)
+              for (int xx = 0; xx < scale; xx++) bitmap.setPixel(left + xx, top + yy, Color.BLACK);
+          }
+        }
+      }
+      image.setImageBitmap(bitmap);
+      image.setVisibility(android.view.View.VISIBLE);
+      image.setContentDescription("QR для подключения. Нажмите для увеличения.");
+      if (credentials != null) credentials.setVisibility(android.view.View.GONE);
+    } catch (Exception exception) {
+      image.setImageDrawable(null);
+      image.setVisibility(android.view.View.GONE);
+      if (credentials != null) credentials.setVisibility(android.view.View.VISIBLE);
+    }
+  }
+
   public static void show(Activity activity, String serverUrl, String password) {
     if (activity == null || activity.isFinishing()) return;
     try {
