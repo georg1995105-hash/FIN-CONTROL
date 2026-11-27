@@ -15,6 +15,20 @@ public final class QrExistingServer {
     if(Build.VERSION.SDK_INT>=26)c.startForegroundService(intent);
     else c.startService(intent);
   }
+  /**
+   * Only the foreground service owns the listener. UI never binds a socket.
+   * Wait briefly for the service to publish a local URL; stop during startup
+   * results in an error rather than resurrecting an orphan server.
+   */
+  private static String awaitServiceUrl() throws Exception {
+    for(int attempt=0;attempt<30;attempt++) {
+      if(Thread.currentThread().isInterrupted())throw new InterruptedException("QR interrupted");
+      String address=LocalTransferHub.currentUrl();
+      if(address!=null)return address;
+      Thread.sleep(100);
+    }
+    throw new IllegalStateException("Local transfer service did not start");
+  }
   public static String buildUri(String ftpUrl, String oldPassword) {
     throw new IllegalStateException("Active local HTTP service and Android Context required");
   }
@@ -24,7 +38,7 @@ public final class QrExistingServer {
     // Never open network sockets on Android's main/UI thread.
     new Thread(()->{
       try {
-        final String uri=LocalTransferHub.start(image.getContext());
+        final String uri=awaitServiceUrl();
         image.post(()->{if(image.getWindowToken()!=null)QrLocalTransfer.render(image,uri);});
       }catch(Exception error){image.post(()->image.setVisibility(android.view.View.GONE));}
     },"fmplus-qr-prepare").start();
@@ -34,7 +48,7 @@ public final class QrExistingServer {
     try{launch(activity);}catch(Exception error){unavailable(activity);return;}
     new Thread(()->{
       try {
-        final String uri=LocalTransferHub.start(activity);
+        final String uri=awaitServiceUrl();
         activity.runOnUiThread(()->{
           if(!activity.isFinishing() && !activity.isDestroyed())QrLocalTransfer.show(activity,uri);
         });
