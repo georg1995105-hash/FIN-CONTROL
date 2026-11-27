@@ -65,3 +65,6 @@
 - Verified live «Передача» implementation at `georg1995105-hash/android-file-manager` (main): `TransferManager` dual HTTP/HTTPS listeners, NSD, bearer lifecycle, browser upload, scoped file sharing; details in `TRANSFER_SOURCE_AUDIT.md`.
 - Retired FTPS QR payload from experimental `FeatureCore` and `AndroidFeatures`; new HTTP QR helper refuses ftp/ftps, bearer pairing contract and portable tests added. No automatic start of the service in File Manager+.
 - **Not finished:** actual file-transfer server, app hooks and the APK patch require the original APK and compatible signing material. Keep V8.2 experimental. Clouds excluded.
+
+## Целевая версия 4.0.0 — 28.11.2026
+Версия 4.0.0 (versionCode 2404000) согласована как **целевой номер окончательного стабильного APK**; текущая V8.2 остаётся 3.8.5/2403089 и не переименована. Переносимый HTTP транспорт и проверка входящих файлов добавлены с исходника «Передачи» с отдельными тестами; код ещё не встроен в оригинальный File Manager+ APK. Правила выпуска: `RELEASE_4_0_0.md`.

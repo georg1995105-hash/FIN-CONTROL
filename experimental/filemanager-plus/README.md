@@ -27,3 +27,11 @@ An isolated Java 17 prototype for the requested File Manager+ enhancements. **No
 
 Do not insert this module into the original APK or claim that the requirements are complete without a separate integration and regression test cycle.
 Source audit and exact endpoint mapping: [TRANSFER_SOURCE_AUDIT.md](TRANSFER_SOURCE_AUDIT.md). Experimental FTP QR creation was removed; the old Android helper is a rejecting compatibility shim. The real File Manager+ APK is **not modified or released** by these portable modules.
+
+### Transferred from the owner's Android "Передача" repository
+- `src/fmplus/LocalHttpsServer.java`: bounded HTTP request parser and restricted LAN socket server.
+- `src/fmplus/IncomingTransfer.java`: validated path, upload chunk, staged atomic commit, SHA-256 checks and cancellation.
+- `browser/`: same static transfer page/JS/CSS as the source application. These **must not** be exposed until the Android service implements all actual endpoints with authorization.
+- Mirrored, separately executable JVM security tests `IncomingTransferTest` and `HttpTransportTest`.
+
+These portable sources are not integrated in File Manager+ 3.8.5 APK. The old FTP server remains unchanged in users' installed V8.2 until an independently tested replacement APK exists.

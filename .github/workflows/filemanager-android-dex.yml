@@ -33,6 +33,8 @@ jobs:
           javac --release 11 -encoding UTF-8 -cp "$platform" -d build/java \
             experimental/filemanager-plus/src/fmplus/FeatureCore.java \
             experimental/filemanager-plus/src/fmplus/LanPairing.java \
+            experimental/filemanager-plus/src/fmplus/LocalHttpsServer.java \
+            experimental/filemanager-plus/src/fmplus/IncomingTransfer.java \
             experimental/filemanager-plus/src/fmplus/SafeTransfer.java \
             experimental/filemanager-plus/src/fmplus/QrMatrix.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \
