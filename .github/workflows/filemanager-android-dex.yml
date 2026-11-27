@@ -1,0 +1,50 @@
+name: File Manager+ Android DEX
+on:
+  push:
+    branches:
+      - work/filemanager-plus-rebuild-20261127
+    paths:
+      - '.github/workflows/filemanager-android-dex.yml'
+      - 'experimental/filemanager-plus/src/**'
+      - 'experimental/filemanager-plus/androidsrc/**'
+  workflow_dispatch:
+jobs:
+  dex:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Compile Android feature module
+        run: |
+          set -euo pipefail
+          sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          echo "SDK: $sdk"
+          platforms=("$sdk"/platforms/android-*/android.jar)
+          platform="$(printf '%s\n' "${platforms[@]}" | sort -V | tail -1)"
+          d8="$(find "$sdk/build-tools" -maxdepth 2 -name d8 -type f | sort -V | tail -1)"
+          test -f "$platform"
+          test -x "$d8"
+          mkdir -p build/java build/dex
+          javac --release 11 -encoding UTF-8 -cp "$platform" -d build/java \
+            experimental/filemanager-plus/src/fmplus/FeatureCore.java \
+            experimental/filemanager-plus/src/fmplus/SafeTransfer.java \
+            experimental/filemanager-plus/src/fmplus/QrMatrix.java \
+            experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \
+            experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java
+          find build/java -name '*.class' > build/sources.txt
+          "$d8" --min-api 26 --lib "$platform" --output build/dex $(cat build/sources.txt)
+          test -s build/dex/classes.dex
+          cp "$platform" build/android.jar
+          echo "Built DEX: $(wc -c < build/dex/classes.dex) bytes"
+          sha256sum build/dex/classes.dex
+      - uses: actions/upload-artifact@v4
+        with:
+          name: filemanager-android-features-dex
+          path: build/dex/classes.dex
+          retention-days: 7
+          if-no-files-found: error
