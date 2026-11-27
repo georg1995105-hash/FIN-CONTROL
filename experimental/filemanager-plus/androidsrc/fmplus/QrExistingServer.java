@@ -45,15 +45,8 @@ public final class QrExistingServer {
   }
   public static void show(Activity activity, String ftpUrl, String oldPassword) {
     if(activity==null||activity.isFinishing())return;
-    try{launch(activity);}catch(Exception error){unavailable(activity);return;}
-    new Thread(()->{
-      try {
-        final String uri=awaitServiceUrl();
-        activity.runOnUiThread(()->{
-          if(!activity.isFinishing() && !activity.isDestroyed())QrLocalTransfer.show(activity,uri);
-        });
-      } catch(Exception error) {activity.runOnUiThread(()->unavailable(activity));}
-    },"fmplus-qr-dialog").start();
+    try{TransferScreenActivity.open(activity);}
+    catch(Exception error){unavailable(activity);}
   }
   private static void unavailable(Activity activity) {
     if(activity.isFinishing()||activity.isDestroyed())return;

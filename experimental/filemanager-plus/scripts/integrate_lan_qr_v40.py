@@ -63,7 +63,8 @@ def build(v82: Path, compiled: Path, apktool: Path, output: Path):
             if not origin.is_dir() or not imported.is_dir():
                 raise ValueError("Missing compiled fmplus smali")
             required=["QrExistingServer.smali","LocalTransferHub.smali",
-                      "LocalTransferService.smali","LanIncomingFile.smali"]
+                      "LocalTransferService.smali","LanIncomingFile.smali",
+                      "TransferScreenActivity.smali"]
             if any(not (imported/name).is_file() for name in required):
                 raise ValueError("Required transfer classes absent")
             shutil.rmtree(origin)
@@ -75,6 +76,7 @@ def build(v82: Path, compiled: Path, apktool: Path, output: Path):
         y=y.replace("versionCode: 2403089","versionCode: 2404000").replace(
             "versionName: 3.8.5","versionName: 4.0.0")
         yml.write_text(y)
+        m=m.replace("    </application>", '        <activity android:name="fmplus.TransferScreenActivity" android:exported="false" android:theme="@style/filemanager.AppTheme"/>\\n    </application>')
         m=m.replace("    </application>", '        <service android:name="fmplus.LocalTransferService" android:exported="false" android:foregroundServiceType="dataSync"/>\n    </application>')
         manifest.write_text(m)
         run("java","-Xmx5g","-jar",str(apktool),"b","-f",str(decoded),"-o",str(output))
