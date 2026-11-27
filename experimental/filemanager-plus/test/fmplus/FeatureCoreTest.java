@@ -31,14 +31,6 @@ public class FeatureCoreTest {
     catch(IOException expected){passes++;}
     try{FeatureCore.importSettings(new byte[2_000_001]);throw new AssertionError("Accepted oversize backup");}
     catch(IOException expected){passes++;}
-    FeatureCore.PairedSession p=FeatureCore.newFtpsSession("192.168.1.12",2121,1234567L,new SecureRandom());
-    check(p.url.startsWith("ftps://qr:"),"FTPS only");
-    check(p.password.length()==32,"192 bit session password");
-    check(!p.expired(1234567L),"Session initially valid");
-    check(p.expired(1234567L+600_000L),"Expires after 10m");
-    check(!p.url.contains("ftp://"),"No plaintext FTP");
-    fails(IllegalArgumentException.class,()->FeatureCore.newFtpsSession("8.8.8.8",2121,0L,new SecureRandom()));
-    fails(IllegalArgumentException.class,()->FeatureCore.newFtpsSession("127.0.0.1",0,0L,new SecureRandom()));
     check(FeatureCore.nextFocus(0,3,new boolean[]{true,false,true,true,true,true},1,0)==2,"Skip disabled focus");
     check(FeatureCore.nextFocus(4,3,new boolean[]{true,false,true,true,true,true},0,-1)==-1,"Out of row focus");
     check(FeatureCore.nextFocus(3,3,new boolean[]{true,false,true,true,true,true},0,-1)==0,"Focus up");

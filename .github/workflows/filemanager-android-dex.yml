@@ -32,9 +32,11 @@ jobs:
           mkdir -p build/java build/dex
           javac --release 11 -encoding UTF-8 -cp "$platform" -d build/java \
             experimental/filemanager-plus/src/fmplus/FeatureCore.java \
+            experimental/filemanager-plus/src/fmplus/LanPairing.java \
             experimental/filemanager-plus/src/fmplus/SafeTransfer.java \
             experimental/filemanager-plus/src/fmplus/QrMatrix.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \
+            experimental/filemanager-plus/androidsrc/fmplus/QrLocalTransfer.java \
             experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java \
             experimental/filemanager-plus/androidsrc/fmplus/SettingsBackupActivity.java \
             experimental/filemanager-plus/androidsrc/fmplus/ApkListLabel.java

@@ -1,11 +1,8 @@
 package fmplus;
 
 import java.io.*;
-import java.net.InetAddress;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.zip.*;
 
@@ -64,37 +61,6 @@ public final class FeatureCore {
       return scheme.toLowerCase(Locale.ROOT) + value;
     }
     return clean;
-  }
-
-  public static final class PairedSession {
-    public final String url;
-    public final String username;
-    public final String password;
-    public final long expiresAtMillis;
-    private PairedSession(String url, String username, String password, long expiresAtMillis) {
-      this.url=url; this.username=username; this.password=password; this.expiresAtMillis=expiresAtMillis;
-    }
-    public boolean expired(long nowMillis) { return nowMillis >= expiresAtMillis; }
-  }
-
-  /** Builds an FTPS QR payload; the server must separately enforce expiry and access control. */
-  public static PairedSession newFtpsSession(String ip, int port, long nowMillis, SecureRandom random) {
-    if (ip == null || !ip.matches("[0-9.]+")) throw new IllegalArgumentException("Expected numeric IPv4 address");
-    try {
-      InetAddress address = InetAddress.getByName(ip);
-      if (address.getAddress().length != 4) throw new IllegalArgumentException("IPv4 is required");
-      if (!address.isSiteLocalAddress() && !address.isLinkLocalAddress() && !address.isLoopbackAddress())
-        throw new IllegalArgumentException("Only local addresses are allowed");
-      if (!address.getHostAddress().equals(ip))
-        throw new IllegalArgumentException("Expected numeric IP address");
-    } catch (java.net.UnknownHostException e) { throw new IllegalArgumentException("Invalid IP address",e); }
-    if (port < 1 || port > 65535) throw new IllegalArgumentException("Invalid port");
-    byte[] secret = new byte[24]; random.nextBytes(secret);
-    String password = Base64.getUrlEncoder().withoutPadding().encodeToString(secret);
-    Arrays.fill(secret, (byte)0);
-    String user = "qr";
-    String url = "ftps://" + user + ":" + password + "@" + ip + ":" + port + "/";
-    return new PairedSession(url, user, password, Math.addExact(nowMillis, 10 * 60_000L));
   }
 
   /** Exact, whitelisted, versioned backup. Does not export credentials or arbitrary app preferences. */

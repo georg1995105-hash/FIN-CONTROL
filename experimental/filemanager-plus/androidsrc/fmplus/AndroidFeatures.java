@@ -40,7 +40,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-/** Android-facing components. Integration with File Manager+ menus/FTP service is still required. */
+/** Android-facing components. Integration with File Manager+ menus/local transfer service is still required. */
 public final class AndroidFeatures {
   private AndroidFeatures() { }
   public static final class ApkDetails {
@@ -157,24 +157,8 @@ public final class AndroidFeatures {
     }
   }
 
-  /** QR is shown only when the server already knows the short-lived credential and enforces expiry. */
-  public interface PairingProvider {
-    FeatureCore.PairedSession createAndActivate() throws Exception;
-    void revoke(FeatureCore.PairedSession session);
-  }
-  public static void showPairing(Activity activity,PairingProvider provider) throws Exception {
-    FeatureCore.PairedSession session=provider.createAndActivate();
-    if(session==null||session.expired(System.currentTimeMillis()))throw new IOException("FTPS session is invalid");
-    QrMatrix qr=QrMatrix.encode(session.url);
-    int module=7,border=4,edge=(QrMatrix.SIZE+border*2)*module;
-    Bitmap bitmap=Bitmap.createBitmap(edge,edge,Bitmap.Config.ARGB_8888);
-    bitmap.eraseColor(Color.WHITE);
-    for(int y=0;y<QrMatrix.SIZE;y++)for(int x=0;x<QrMatrix.SIZE;x++)if(qr.get(x,y))for(int yy=0;yy<module;yy++)
-      for(int xx=0;xx<module;xx++)bitmap.setPixel((x+border)*module+xx,(y+border)*module+yy,Color.BLACK);
-    ImageView image=new ImageView(activity);image.setImageBitmap(bitmap);image.setContentDescription("QR для доступа к файлам через FTPS");
-    new AlertDialog.Builder(activity).setTitle("Доступ по QR").setView(image)
-      .setMessage("Только в одной локальной сети. Доступ временный и защищённый.")
-      .setPositiveButton("Готово",(d,w)->provider.revoke(session))
-      .setOnCancelListener(d->provider.revoke(session)).show();
+  /** QR opens the ACTIVE local HTTP browser transfer service. No FTP credentials. */
+  public static void showBrowserPairing(Activity activity,String activeBrowserUrl) {
+    QrLocalTransfer.show(activity,activeBrowserUrl);
   }
 }

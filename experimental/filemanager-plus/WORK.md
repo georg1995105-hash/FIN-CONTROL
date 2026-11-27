@@ -60,3 +60,8 @@
 - Repro script: `scripts/patch_durable_preferences_v82.py`, expects exact DEX and manifest SHA-256 and refuses unknown APK. Emits unsigned archive; private signing key and APK remain local and are **not** pushed into public FIN-CONTROL.
 - Still needs Android/TV runtime tests of folder selection persistence, copying, media thumbnails, QR pairing and analysis. This is a test build, **not** a complete daily-use release. Cloud intentionally out of scope at the owner's request.
 - Special New Files list uses its own reduced menu (`res/menu/list_refresh.xml`); injecting arbitrary menu actions was deliberately avoided as a regression risk. Full per-section settings availability is not yet demonstrated.
+
+## Source-driven QR revision (28.11.2026)
+- Verified live «Передача» implementation at `georg1995105-hash/android-file-manager` (main): `TransferManager` dual HTTP/HTTPS listeners, NSD, bearer lifecycle, browser upload, scoped file sharing; details in `TRANSFER_SOURCE_AUDIT.md`.
+- Retired FTPS QR payload from experimental `FeatureCore` and `AndroidFeatures`; new HTTP QR helper refuses ftp/ftps, bearer pairing contract and portable tests added. No automatic start of the service in File Manager+.
+- **Not finished:** actual file-transfer server, app hooks and the APK patch require the original APK and compatible signing material. Keep V8.2 experimental. Clouds excluded.
