@@ -80,8 +80,10 @@ public final class FeatureCore {
 
   /** Builds an FTPS QR payload; the server must separately enforce expiry and access control. */
   public static PairedSession newFtpsSession(String ip, int port, long nowMillis, SecureRandom random) {
+    if (ip == null || !ip.matches("[0-9.]+")) throw new IllegalArgumentException("Expected numeric IPv4 address");
     try {
       InetAddress address = InetAddress.getByName(ip);
+      if (address.getAddress().length != 4) throw new IllegalArgumentException("IPv4 is required");
       if (!address.isSiteLocalAddress() && !address.isLinkLocalAddress() && !address.isLoopbackAddress())
         throw new IllegalArgumentException("Only local addresses are allowed");
       if (!address.getHostAddress().equals(ip))
