@@ -68,3 +68,15 @@
 
 ## Целевая версия 4.0.0 — 28.11.2026
 Версия 4.0.0 (versionCode 2404000) согласована как **целевой номер окончательного стабильного APK**; текущая V8.2 остаётся 3.8.5/2403089 и не переименована. Переносимый HTTP транспорт и проверка входящих файлов добавлены с исходника «Передачи» с отдельными тестами; код ещё не встроен в оригинальный File Manager+ APK. Правила выпуска: `RELEASE_4_0_0.md`.
+
+## Verified integration-stage checks — 28.11.2026
+- QR source comparison and scoped protocol: `TRANSFER_SOURCE_AUDIT.md`. Mainline original source: `georg1995105-hash/android-file-manager`, including browser HTTP QR, TLS-pinned native client, NSD and upload/download.
+- FTP/FTPS QR has been **removed from the experimental modules**: `FeatureCore`, `AndroidFeatures`, `QrExistingServer` now use/route to `LanPairing` and `QrLocalTransfer`. This does **not** remove FTP in any previously installed proprietary APK.
+- Source-derived `LocalHttpsServer.java`, `IncomingTransfer.java`, `browser/` added. Portable HTTP framing, file reception, local copy, QR, bearer sessions, backup v1/v2 and per-folder view/icon preferences covered by CI tests. Browser SHA-256, web asset contract and JS syntax also covered.
+- `File Manager feature-core tests` PASS: https://github.com/georg1995105-hash/FIN-CONTROL/actions/runs/46077948532
+- `File Manager+ Android DEX` PASS for same Java/Android sources: https://github.com/georg1995105-hash/FIN-CONTROL/actions/runs/46077861380
+- Passing Java/D8 tests are *not* on-device functionality evidence. The included browser page cannot be used from File Manager+ until the real Android transfer service, asset packing and manifest are integrated.
+- Target stable version: `4.0.0`, candidate `versionCode 2404000`, not applied to any APK as no full APK was built. See `RELEASE_4_0_0.md`.
+- **External prerequisites not available in this chat/session:** exact original `base.apk`, last signed `FileManagerPlus-3.8.5-V8.2-DURABLE-PREFERENCES-TEST.apk`, matching private signing material or a signing service; emulator/physical Android/TV testing. Prior sandbox paths are session-specific and do not resolve here.
+- Release remains BLOCKED: no signed/installable File Manager+ 4.0.0 was produced; no installation-over-V8.2 or user-data regression could be checked. Never label V8.2 or DEX artifact production-ready.
+- No changes to FIN CONTROL application/main, VPN infrastructure, Google Drive or other cloud functionality.
