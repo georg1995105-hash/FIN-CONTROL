@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.ImageView;
 import android.view.View;
 import android.view.ViewParent;
+import android.widget.GridView;
+import android.text.TextUtils;
 import java.io.File;
 import java.util.Locale;
 import java.util.WeakHashMap;
@@ -32,11 +34,23 @@ public final class ApkListLabel {
   private static final WeakHashMap<TextView, String> BOUND = new WeakHashMap<>();
   private static final LruCache<String, String> CACHE = new LruCache<>(128);
 
+  private static boolean isGridItem(View view) {
+    ViewParent p = view.getParent();
+    while (p instanceof View) {
+      if (p instanceof GridView) return true;
+      p = p.getParent();
+    }
+    return false;
+  }
+
   public static void bind(Context context, String filename, String path, TextView view, ImageView icon) {
     if (view == null) return;
     BOUND.remove(view);
-    // Global list icon toggle; do not hide icons in grids, which would become blank.
-    if (icon != null && !view.getClass().getName().contains("GridFilename")) {
+    // Keep very long APK filenames from expanding rows and causing scroll jumps.
+    view.setMaxLines(2);
+    view.setEllipsize(TextUtils.TruncateAt.END);
+    // Global list icon toggle, but do not hide icons in a grid.
+    if (icon != null && !isGridItem(view)) {
       ViewParent parent = icon.getParent();
       if (parent instanceof View) {
         boolean visible = context.getSharedPreferences(
