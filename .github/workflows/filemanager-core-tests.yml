@@ -18,7 +18,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - name: Compile
+      - name: Compile portable modules
         run: |
           cd experimental/filemanager-plus
           mkdir -p build
@@ -27,3 +27,17 @@ jobs:
         run: java -cp experimental/filemanager-plus/build fmplus.FeatureCoreTest
       - name: Test local copy, conflicts, progress, cancellation
         run: java -cp experimental/filemanager-plus/build fmplus.SafeTransferTest
+      - name: Test QR V5 encoder
+        run: java -cp experimental/filemanager-plus/build fmplus.QrMatrixTest "$RUNNER_TEMP/ftps-qr.pgm"
+      - name: Compile Android UI and media adapters
+        run: |
+          set -euo pipefail
+          SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          JAR="$(find "$SDK_ROOT/platforms" -maxdepth 2 -name android.jar | sort -V | tail -1)"
+          if [ -z "$JAR" ]; then
+            echo "Android SDK platform is not installed"; exit 1
+          fi
+          mkdir -p experimental/filemanager-plus/build/android
+          javac -encoding UTF-8 -cp "$JAR:experimental/filemanager-plus/build" \
+            -d experimental/filemanager-plus/build/android \
+            experimental/filemanager-plus/androidsrc/fmplus/AndroidFeatures.java
