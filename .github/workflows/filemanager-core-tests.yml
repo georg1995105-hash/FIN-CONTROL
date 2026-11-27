@@ -43,6 +43,11 @@ jobs:
         run: |
           node --check experimental/filemanager-plus/browser/app.js
           node experimental/filemanager-plus/test-browser-assets.js
+      - name: Verify reproducible 4.0.0 integration script syntax and safeguards
+        run: |
+          python -m py_compile experimental/filemanager-plus/scripts/integrate_lan_qr_v40.py
+          grep -q 'EXPECTED_V82' experimental/filemanager-plus/scripts/integrate_lan_qr_v40.py
+          grep -q 'NOT INSTALLABLE' experimental/filemanager-plus/scripts/integrate_lan_qr_v40.py
       - name: Validate V8.2 patch script (no APK distributed)
         run: |
           set -euo pipefail
