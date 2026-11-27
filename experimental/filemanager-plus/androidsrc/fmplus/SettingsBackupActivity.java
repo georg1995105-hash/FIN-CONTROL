@@ -63,7 +63,16 @@ public final class SettingsBackupActivity extends Activity {
        .setMessage("Сохранённые общие параметры заменят текущие. Файлы не затрагиваются.")
        .setNegativeButton("Отмена",null).setPositiveButton("Продолжить",(d,w)->chooseImport()).show());
     root.addView(restore,new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT));
-    setContentView(root);
+    // Keep controls readable on tablets and Android TV instead of spanning the entire screen.
+    android.widget.FrameLayout host = new android.widget.FrameLayout(this);
+    android.widget.FrameLayout.LayoutParams panel = new android.widget.FrameLayout.LayoutParams(
+        Math.min(getResources().getDisplayMetrics().widthPixels, dp(560)),
+        ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.TOP | Gravity.CENTER_HORIZONTAL);
+    host.addView(root, panel);
+    android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+    scroll.setFillViewport(true);
+    scroll.addView(host);
+    setContentView(scroll);
   }
   private int dp(int d) {return (int)(d*getResources().getDisplayMetrics().density+0.5f);}
   private void chooseExport() {
