@@ -63,12 +63,12 @@ public final class AndroidFeatures {
     String title=info.packageName; Drawable icon=null;
     if(app!=null){
       app.sourceDir=file.getAbsolutePath();app.publicSourceDir=file.getAbsolutePath();
-      try{CharSequence name=app.loadLabel(pm);if(name!=null&&!name.toString().isBlank())title=name.toString();}catch(RuntimeException ignored){}
+      try{CharSequence name=app.loadLabel(pm);if(name!=null&&!name.toString().trim().isEmpty())title=name.toString();}catch(RuntimeException ignored){}
       try{icon=app.loadIcon(pm);}catch(RuntimeException ignored){}
     }
     String version=info.versionName==null?"—":info.versionName;
     List<String> perms=info.requestedPermissions==null?Collections.emptyList():Arrays.asList(info.requestedPermissions.clone());
-    return new ApkDetails(info.packageName,version,title,info.getLongVersionCode(),file.length(),perms,icon);
+    return new ApkDetails(info.packageName,version,title,(Build.VERSION.SDK_INT>=28 ? info.getLongVersionCode() : (long)info.versionCode),file.length(),perms,icon);
   }
   public static void showApkDetails(Activity a,File apk) {
     try {
