@@ -6,34 +6,45 @@ import android.content.Intent;
 import android.os.Build;
 import android.widget.ImageView;
 
-/**
- * Retires FTP pairing QR in the actual V8.2 call-site without changing the old
- * fragment's method signature. The old ftpUrl/password arguments are ignored.
- */
+/** V8.2 method-signature compatibility; QR never embeds FTP URI/password. */
 @Deprecated
 public final class QrExistingServer {
-  private QrExistingServer(){}
-  private static String browser(Context c)throws Exception {
-    String uri=LocalTransferHub.start(c);
-    Intent i=new Intent(c,LocalTransferService.class);
-    if(Build.VERSION.SDK_INT>=26)c.startForegroundService(i);
-    else c.startService(i);
-    return uri;
+  private QrExistingServer() {}
+  private static void launch(Context c) {
+    Intent intent = new Intent(c, LocalTransferService.class);
+    if(Build.VERSION.SDK_INT>=26)c.startForegroundService(intent);
+    else c.startService(intent);
   }
-  public static String buildUri(String ftpUrl,String oldPassword) {
-    // Must not turn FTP URI into a fake HTTP URI. Service context is required.
-    throw new IllegalStateException("Start LAN transfer using an Android Context");
+  public static String buildUri(String ftpUrl, String oldPassword) {
+    throw new IllegalStateException("Active local HTTP service and Android Context required");
   }
-  public static void render(ImageView image,String ftpUrl,String oldPassword) {
+  public static void render(ImageView image, String ftpUrl, String oldPassword) {
     if(image==null)return;
-    try{QrLocalTransfer.render(image,browser(image.getContext()));}
-    catch(Exception e){image.setImageDrawable(null);image.setVisibility(android.view.View.GONE);}
+    try{launch(image.getContext());}catch(Exception error){image.setVisibility(android.view.View.GONE);return;}
+    // Never open network sockets on Android's main/UI thread.
+    new Thread(()->{
+      try {
+        final String uri=LocalTransferHub.start(image.getContext());
+        image.post(()->{if(image.getWindowToken()!=null)QrLocalTransfer.render(image,uri);});
+      }catch(Exception error){image.post(()->image.setVisibility(android.view.View.GONE));}
+    },"fmplus-qr-prepare").start();
   }
-  public static void show(Activity activity,String ftpUrl,String oldPassword) {
+  public static void show(Activity activity, String ftpUrl, String oldPassword) {
     if(activity==null||activity.isFinishing())return;
-    try{QrLocalTransfer.show(activity,browser(activity));}
-    catch(Exception e){new android.app.AlertDialog.Builder(activity).setTitle("Передача недоступна")
-      .setMessage(e.getMessage()==null?"Проверьте Wi-Fi":e.getMessage())
-      .setPositiveButton("ОК",null).show();}
+    try{launch(activity);}catch(Exception error){unavailable(activity);return;}
+    new Thread(()->{
+      try {
+        final String uri=LocalTransferHub.start(activity);
+        activity.runOnUiThread(()->{
+          if(!activity.isFinishing() && !activity.isDestroyed())QrLocalTransfer.show(activity,uri);
+        });
+      } catch(Exception error) {activity.runOnUiThread(()->unavailable(activity));}
+    },"fmplus-qr-dialog").start();
+  }
+  private static void unavailable(Activity activity) {
+    if(activity.isFinishing()||activity.isDestroyed())return;
+    new android.app.AlertDialog.Builder(activity).setTitle("Передача недоступна")
+      .setMessage("Проверьте Wi-Fi и разрешения.")
+      .setPositiveButton("ОК",null).show();
   }
 }
