@@ -35,6 +35,7 @@ jobs:
             experimental/filemanager-plus/src/fmplus/LanPairing.java \
             experimental/filemanager-plus/src/fmplus/LocalHttpsServer.java \
             experimental/filemanager-plus/src/fmplus/IncomingTransfer.java \
+            experimental/filemanager-plus/src/fmplus/LanIncomingFile.java \
             experimental/filemanager-plus/src/fmplus/SafeTransfer.java \
             experimental/filemanager-plus/src/fmplus/QrMatrix.java \
             experimental/filemanager-plus/androidsrc/fmplus/QrExistingServer.java \

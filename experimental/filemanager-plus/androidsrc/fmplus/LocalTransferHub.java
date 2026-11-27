@@ -10,7 +10,6 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,8 +38,8 @@ public final class LocalTransferHub {
 
   private static final class Upload {
     final String token, name, batch;
-    final IncomingTransfer receiver;
-    Upload(String token, String name, String batch, IncomingTransfer receiver) {
+    final LanIncomingFile receiver;
+    Upload(String token, String name, String batch, LanIncomingFile receiver) {
       this.token=token; this.name=name; this.batch=batch; this.receiver=receiver;
     }
   }
@@ -160,14 +159,13 @@ public final class LocalTransferHub {
         if(uploads.size()>=8){fail(out,429,"Лимит активных файлов");return;}
         JSONObject j=body(r);
         String name=j.getString("name"),batch=j.getString("batch");
-        IncomingTransfer.validatePath(name);
+        LanIncomingFile.validatePath(name);
         if(!token.equals(batches.get(batch))){fail(out,403,"Неверная передача");return;}
         long size=j.getLong("size");
-        File target=receiverDir(),staging=new File(target,".staging");
+        File target=receiverDir();
         long space=target.getUsableSpace()-64L*1024*1024;
         if(size<0 || size>space){fail(out,413,"Недостаточно места");return;}
-        IncomingTransfer incoming=new IncomingTransfer(staging.toPath(),target.toPath(),name,size,
-          j.optString("sha256"),space,true).renameOnConflict();
+        LanIncomingFile incoming=new LanIncomingFile(target,name,size,j.optString("sha256"),space);
         String id=id();uploads.put(id,new Upload(token,name,batch,incoming));
         reply(out,200,new JSONObject().put("id",id));return;
       }
@@ -190,9 +188,9 @@ public final class LocalTransferHub {
           reply(out,200,new JSONObject().put("offset",done));return;
         }
         if(r.method.equals("POST")){
-          Path saved=job.receiver.finish();
+          File saved=job.receiver.finish();
           uploads.remove(id,job);
-          MediaScannerConnection.scanFile(app,new String[]{saved.toString()},null,null);
+          MediaScannerConnection.scanFile(app,new String[]{saved.getAbsolutePath()},null,null);
           reply(out,200,new JSONObject().put("done",true));return;
         }
       }

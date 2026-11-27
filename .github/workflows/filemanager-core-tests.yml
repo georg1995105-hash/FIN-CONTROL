@@ -29,6 +29,8 @@ jobs:
         run: java -cp experimental/filemanager-plus/build fmplus.ViewPersistenceTest
       - name: Test Transfer-style LAN QR and bearer session lifecycle
         run: java -cp experimental/filemanager-plus/build fmplus.LanPairingTest
+      - name: Test Android API21-compatible receiver
+        run: java -cp experimental/filemanager-plus/build fmplus.LanIncomingFileTest
       - name: Test source-transplanted safe incoming transfer
         run: java -cp experimental/filemanager-plus/build fmplus.IncomingTransferTest
       - name: Test source-transplanted HTTP framing and origin validation
