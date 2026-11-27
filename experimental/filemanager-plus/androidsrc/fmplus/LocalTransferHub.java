@@ -117,14 +117,21 @@ public final class LocalTransferHub {
     String fallback=null;
     while(all.hasMoreElements()){
       NetworkInterface net=all.nextElement();
-      if(!net.isUp()||net.isLoopback())continue;
+      if(!net.isUp()||net.isLoopback()||net.isVirtual())continue;
+      String interfaceName=net.getName().toLowerCase(Locale.ROOT);
+      // A VPN tunnel may own a private IP but is not reachable by the other
+      // phone/TV in the local Wi-Fi network. Never encode it into the QR.
+      if(interfaceName.startsWith("tun")||interfaceName.startsWith("wg")||
+         interfaceName.startsWith("ppp")||interfaceName.startsWith("rmnet")||
+         interfaceName.startsWith("clat")||interfaceName.startsWith("veth"))
+        continue;
       Enumeration<InetAddress> addresses=net.getInetAddresses();
       while(addresses.hasMoreElements()){
         InetAddress addr=addresses.nextElement();
         if(!(addr instanceof Inet4Address)||!addr.isSiteLocalAddress())continue;
         String ip=addr.getHostAddress();
         try {LanPairing.checkIp(ip);} catch(IllegalArgumentException error){continue;}
-        if(net.getName().startsWith("wlan")||net.getName().startsWith("eth"))return ip;
+        if(interfaceName.startsWith("wlan")||interfaceName.startsWith("eth")||interfaceName.startsWith("ap")||interfaceName.startsWith("p2p"))return ip;
         if(fallback==null)fallback=ip;
       }
     }
