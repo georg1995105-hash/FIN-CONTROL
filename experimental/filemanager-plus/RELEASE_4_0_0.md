@@ -10,14 +10,14 @@ Requested by owner on 28.11.2026. **Target only, not a released APK.**
 - The final APK must be signed with the SAME certificate as the installed V8.2 build to upgrade in place; otherwise keep it separate and do not claim no data loss.
 
 ## Non-negotiable release gate
-1. Retrieve and authenticate the exact original 3.8.5 APK and V8.2 reference; confirm package, target/min SDK, signature and DEX hashes.
-2. Merge source-driven LAN transfer service **replacing QR-over-FTP**; reproduce browser QR, Android/TV TLS pinning, NSD, bounded authorization, file allowlist, progress, cancel, resume, filenames, conflict and download tests.
+1. [VERIFIED] Original APK and V8.2 retrieved from the user's ChatGPT Library; package, versions, binary hashes and v3 signing certificates checked.
+2. [PARTIAL] Standalone HTTP browser QR, foreground receiving service and chunked upload are in reproducible *unsigned* integration; native pinned HTTPS, NSD and selected-file download, user-facing flows and Android runtime verification remain open.
 3. Per-folder display preferences, sort/thumbnail/icon settings, main screen, APK details, backup restore, all special screens; no cloud changes.
 4. Debug/instrumented tests on Android phone, tablet and TV; D-pad, focus, file copy, move, cancel, restart, low storage, large files, display settings after process death.
 5. Produce signed candidate, use Android PackageManager to verify install-over-V8.2 keeps data; test rollback/data backup. If signer mismatch, stop release.
 6. Only after every gate passes: publish one **4.0.0 stable** APK and verified direct download link.
 
-**Available source in this repo:** experimental feature modules only; original APK and V8.2 binaries, private signing key and Android device test evidence are absent. Do not mark the release complete.
+**Current status:** exact original APK and V8.2 are available privately through ChatGPT Library, not public GitHub. Offline APKtool 4.0.0 integration completed and ZIP/DEX/manifest validated; temporary-signer verification was not a release. The *V8.2 private signing key* and Android/TV device test evidence remain absent. Do not mark the release complete.
 
 ## Source APK variant caution
 Public catalogs list four distinct 3.8.5 variants with different Android minSdk (5.0, 7.0, 10.0, 12L). They must not be interchanged with the user's exact original or V8.2. The exact installed package's certificate and variant should be read from its APK or device before patching. App archive listing is not a substitute for the original bytes.
