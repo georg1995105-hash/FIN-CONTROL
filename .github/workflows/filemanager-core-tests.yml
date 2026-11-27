@@ -37,6 +37,10 @@ jobs:
         run: java -cp experimental/filemanager-plus/build fmplus.SafeTransferTest
       - name: Test QR V5 encoder
         run: java -cp experimental/filemanager-plus/build fmplus.QrMatrixTest "$RUNNER_TEMP/http-qr.pgm"
+      - name: Validate browser assets and incremental SHA-256
+        run: |
+          node --check experimental/filemanager-plus/browser/app.js
+          node experimental/filemanager-plus/test-browser-assets.js
       - name: Validate V8.2 patch script (no APK distributed)
         run: |
           set -euo pipefail

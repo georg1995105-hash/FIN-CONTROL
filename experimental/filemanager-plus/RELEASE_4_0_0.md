@@ -18,3 +18,6 @@ Requested by owner on 28.11.2026. **Target only, not a released APK.**
 6. Only after every gate passes: publish one **4.0.0 stable** APK and verified direct download link.
 
 **Available source in this repo:** experimental feature modules only; original APK and V8.2 binaries, private signing key and Android device test evidence are absent. Do not mark the release complete.
+
+## Source APK variant caution
+Public catalogs list four distinct 3.8.5 variants with different Android minSdk (5.0, 7.0, 10.0, 12L). They must not be interchanged with the user's exact original or V8.2. The exact installed package's certificate and variant should be read from its APK or device before patching. App archive listing is not a substitute for the original bytes.
