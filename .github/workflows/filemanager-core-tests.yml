@@ -29,6 +29,26 @@ jobs:
         run: java -cp experimental/filemanager-plus/build fmplus.SafeTransferTest
       - name: Test QR V5 encoder
         run: java -cp experimental/filemanager-plus/build fmplus.QrMatrixTest "$RUNNER_TEMP/ftps-qr.pgm"
+      - name: Validate V8.2 patch script (no APK distributed)
+        run: |
+          set -euo pipefail
+          python -m py_compile experimental/filemanager-plus/scripts/patch_durable_preferences_v82.py
+          tmp="$(mktemp -d)"
+          export PATCH_TEST_TMP="$tmp"
+          python - <<'PY'
+          import os, zipfile, subprocess, sys
+          from pathlib import Path
+          tmp=Path(os.environ['PATCH_TEST_TMP'])
+          apk=tmp/'invalid.apk'
+          with zipfile.ZipFile(apk,'w') as f:
+              f.writestr('classes.dex',b'not an APK')
+              f.writestr('AndroidManifest.xml',b'not a manifest')
+          out=tmp/'output.apk'
+          run=subprocess.run([sys.executable,'experimental/filemanager-plus/scripts/patch_durable_preferences_v82.py',str(apk),str(out)],capture_output=True,text=True)
+          assert run.returncode!=0, 'Unknown APK incorrectly accepted'
+          assert not out.exists(), 'Unexpected APK produced from wrong input'
+          print('PASS: V8.2 patch refuses an unknown APK')
+          PY
       - name: Compile Android UI and media adapters
         run: |
           set -euo pipefail
