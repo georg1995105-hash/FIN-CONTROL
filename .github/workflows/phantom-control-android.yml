@@ -1,0 +1,35 @@
+name: PHANTOM CONTROL Android verification
+on:
+  push:
+    branches: [work/phantom-control-20261128]
+    paths: ["app/**", "build.gradle.kts", "settings.gradle.kts", ".github/workflows/phantom-control-android.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Android SDK
+        run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-35" "build-tools;35.0.0"'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - run: gradle --no-daemon --console=plain :app:testDebugUnitTest :app:assembleDebug :app:lintDebug
+      - name: Verify manifest and digest
+        run: |
+          APK=app/build/outputs/apk/debug/app-debug.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$APK" | grep "package: name='pro.veor.phantomcontrol'"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump permissions "$APK" | grep android.permission.INTERNET
+          sha256sum "$APK"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phantom-control-debug
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
