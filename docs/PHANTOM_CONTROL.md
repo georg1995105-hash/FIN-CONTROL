@@ -17,3 +17,8 @@ Android 15 x86_64 synthetic HTTPS UI contract CI SUCCESS: https://github.com/geo
 
 ## Alpha03 conversation continuation
 Explicit new conversation or follow-up to a completed turn, six previous turn pairs maximum, separate task/chat drafts, model selection, automatic selection of successful pending response, queued-only cancel, feature negotiation for older server. Server history is currently limited to the latest 40 entries returned to app. Server changes have 33/33 local tests and both process smoke tests passed. No live model or production deployment. Android build and device checks pending.
+
+## Подтверждённое состояние alpha03
+- Exact Android SHA e73795059df11d61929bd1ee8eea1429411293f0: сборка, unit, lint, manifest/digest и расширенный Android 15 (API35 x86_64) synthetic HTTPS UI contract SUCCESS. Runs https://github.com/georg1995105-hash/FIN-CONTROL/actions/runs/46184218905 и https://github.com/georg1995105-hash/FIN-CONTROL/actions/runs/46184218920 . APK artifact 15278548900, UI evidence 15278863628. Тестовые данные; физическое устройство и связка с настоящим backend ещё не проверены.
+- В закрытой серверной ветке добавлен изолированный канал к Codex: проверка UID обоих процессов, отдельный запуск, разрешённые модели/effort, очереди, история, квоты и отказ при неизвестном результате. 33/33 теста и 4 отдельные smoke-проверки PASS, включая настоящий backend и отдельные процессы с синтетическим CLI. Реальная модель не вызывалась, production не затронут.
+- Следующий gate: штатная авторизация Codex в отдельной изолированной среде и реальный ограниченный запрос, проверка фактического backend с Android, защищённый доступ, затем только разрешённые сценарии автоматизации. Не копировать root-auth; не включать ремонт, не публиковать до приёмки.
