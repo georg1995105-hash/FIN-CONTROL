@@ -64,6 +64,9 @@ class ControlState : ViewModel() {
     var busy by mutableStateOf(false); private set
     var stale by mutableStateOf(true); private set
     var draft by mutableStateOf("")
+    var chatDraft by mutableStateOf("")
+    var chatParent by mutableStateOf<Task?>(null); private set
+    var pendingChat by mutableStateOf<String?>(null); private set
     var kind by mutableStateOf("diagnose")
     var model by mutableStateOf("")
     private var lastSubmission: Pair<List<String>,String>? = null
@@ -81,7 +84,7 @@ class ControlState : ViewModel() {
     fun stopPolling(){polling?.cancel();polling=null}
     private fun clearSession() {
         pairingCode="";api=null;snapshot=null;connected=false;stale=true;lastSubmission=null
-        draft="";model=""
+        draft="";chatDraft="";chatParent=null;pendingChat=null;model=""
     }
     fun disconnect() {
         if(busy) return
@@ -115,6 +118,9 @@ class ControlState : ViewModel() {
     }
     private fun applySnapshot(v:Snapshot) {
         snapshot=v;stale=false
+        val pending=v.tasks.firstOrNull{it.id==pendingChat}
+        if(pending?.state=="succeeded"){chatParent=pending;pendingChat=null}
+        else if(pending!=null && pending.state in setOf("failed","needs_review","cancelled"))pendingChat=null
         if(v.capabilities.none{it.kind==kind})kind=v.capabilities.firstOrNull()?.kind ?: ""
         val models=v.capabilities.firstOrNull{it.kind==kind}?.models.orEmpty()
         if(model !in models)model=models.firstOrNull() ?: ""
@@ -123,16 +129,40 @@ class ControlState : ViewModel() {
         val client=api ?: return
         runWork { applySnapshot(withContext(Dispatchers.IO){client.snapshot()}) }
     }
-    fun submit() {
+    fun selectConversation(parent:Task?) {
+        if(busy)return
+        if(parent!=null && (parent.kind!="chat" || parent.state!="succeeded" || snapshot?.features?.contains("chat_parent")!=true))return
+        chatParent=parent;pendingChat=null
+    }
+    fun submit(selectedKind:String,selectedModel:String) {
         val client=api ?: return
-        if(stale || busy || draft.isBlank() || draft.length>4000) return
-        if(snapshot?.capabilities?.none{it.kind==kind && model in it.models} != false) return
-        val content=listOf(kind,model,draft.trim())
+        val isChat=selectedKind=="chat"
+        val message=if(isChat)chatDraft else draft
+        if(stale || busy || message.isBlank() || message.length>4000 || (isChat && pendingChat!=null)) return
+        if(snapshot?.capabilities?.none{it.kind==selectedKind && selectedModel in it.models} != false) return
+        val parent=if(isChat && snapshot?.features?.contains("chat_parent")==true)chatParent?.id else null
+        val content=listOf(selectedKind,selectedModel,message.trim(),parent.orEmpty())
         val id=lastSubmission?.takeIf{it.first==content}?.second ?: UUID.randomUUID().toString()
         lastSubmission=content to id
         runWork {
-            withContext(Dispatchers.IO){client.submit(id,content[0],content[1],content[2])}
-            lastSubmission=null;draft=""
+            withContext(Dispatchers.IO){client.submit(id,content[0],content[1],content[2],parent)}
+            lastSubmission=null
+            if(isChat){chatDraft="";if(snapshot?.features?.contains("chat_parent")==true)pendingChat=id}
+            else draft=""
+            applySnapshot(withContext(Dispatchers.IO){client.snapshot()})
+        }
+    }
+    fun cancel(task:Task) {
+        val client=api ?: return
+        if(busy || stale || task.state!="queued" || snapshot?.features?.contains("cancel_queued")!=true)return
+        runWork {
+            try { withContext(Dispatchers.IO){client.cancel(task.id)} }
+            catch(e:ApiHttpException){
+                if(e.status!=409)throw e
+                applySnapshot(withContext(Dispatchers.IO){client.snapshot()})
+                error="Задача уже запущена или завершена. Отмена не выполнена."
+                return@runWork
+            }
             applySnapshot(withContext(Dispatchers.IO){client.snapshot()})
         }
     }
@@ -154,7 +184,7 @@ private val titles=listOf("Главная","Задачи","Чат","Настро
 private fun statusLabel(value:String)=when(value){
     "ok"->"Работает";"degraded"->"Нестабильно";"failed"->"Ошибка";"unknown"->"Не проверено"
     "queued"->"В очереди";"running"->"Выполняется";"succeeded"->"Завершено";"needs_review"->"Требуется проверка"
-    "disabled"->"Выключен";else->value
+    "disabled"->"Выключен";"cancelled"->"Отменено";else->value
 }
 private fun kindLabel(value:String)=when(value){"diagnose"->"Диагностика (только чтение)";"develop"->"Разработка";"chat"->"Чат";else->value}
 private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная диагностика" else value
@@ -176,7 +206,10 @@ private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная 
     }
 }
 @Composable private fun Body(modifier:Modifier,s:ControlState,page:Int,theme:String,onTheme:(String)->Unit,navigate:(Int)->Unit){
-    Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
+    val scroll=rememberScrollState()
+    val scope=rememberCoroutineScope()
+    LaunchedEffect(page){scroll.scrollTo(0)}
+    Column(modifier.fillMaxSize().verticalScroll(scroll).padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
         Row(verticalAlignment=Alignment.CenterVertically){
             Text(if(page==0)"PHANTOM CONTROL" else titles[page],style=MaterialTheme.typography.headlineSmall,modifier=Modifier.weight(1f))
             IconButton(onClick={s.refresh()},enabled=!s.busy && s.connected){Icon(Icons.Filled.Refresh,"Обновить")}
@@ -204,17 +237,44 @@ private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная 
                 else{
                     val selected=available.firstOrNull{it.kind==s.kind} ?: available.first()
                     LaunchedEffect(selected.kind){s.kind=selected.kind;if(s.model !in selected.models)s.model=selected.models.firstOrNull()?:""}
-                    Text("Тип задачи")
-                    available.forEach{c-> FilterChip(c.kind==s.kind,{s.kind=c.kind;s.model=c.models.firstOrNull()?:""},{Text(kindLabel(c.kind))})}
+                    val isChat=page==2
+                    val supportsHistory=snap?.features?.contains("chat_parent")==true
+                    if(isChat && supportsHistory){
+                        Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
+                            Text(if(s.chatParent==null)"Новый диалог" else "Продолжение: "+s.chatParent!!.title.take(80),modifier=Modifier.weight(1f))
+                            OutlinedButton(onClick={s.selectConversation(null)},enabled=!s.busy){Text("Новый диалог")}
+                        }
+                        Text("В контекст входят до шести предыдущих ответов выбранного диалога.",style=MaterialTheme.typography.bodySmall)
+                        if(s.pendingChat!=null)Text("Ответ готовится. Можно начать новый диалог, не отменяя отправленный запрос.")
+                    }
+                    if(!isChat){
+                        Text("Тип задачи")
+                        available.forEach{c-> FilterChip(c.kind==s.kind,{s.kind=c.kind;s.model=c.models.firstOrNull()?:""},{Text(kindLabel(c.kind))},enabled=!s.busy)}
+                    }
                     Text("Исполнитель")
-                    selected.models.forEach{m-> FilterChip(m==s.model,{s.model=m},{Text(modelLabel(m))})}
-                    OutlinedTextField(s.draft,{s.draft=it},Modifier.fillMaxWidth(),label={Text("Поручение")},minLines=3)
-                    Button(onClick={s.submit()},enabled=!s.busy&&!s.stale&&s.draft.isNotBlank()&&s.model in selected.models){Text("Запустить")}
+                    selected.models.forEach{m-> FilterChip(m==s.model,{s.model=m},{Text(modelLabel(m))},enabled=!s.busy)}
+                    val message=if(isChat)s.chatDraft else s.draft
+                    OutlinedTextField(message,{if(isChat)s.chatDraft=it else s.draft=it},Modifier.fillMaxWidth(),label={Text(if(isChat)"Сообщение" else "Поручение")},minLines=3,enabled=!s.busy)
+                    Button(onClick={s.submit(selected.kind,s.model)},enabled=!s.busy&&!s.stale&&message.isNotBlank()&&message.length<=4000&&s.model in selected.models&&(!isChat||s.pendingChat==null)){Text(if(isChat)"Отправить" else "Запустить")}
                 }
-                Text("История задач",style=MaterialTheme.typography.titleLarge)
+                Text(if(page==2)"История диалогов" else "История задач",style=MaterialTheme.typography.titleLarge)
                 val tasks=snap?.tasks.orEmpty().filter{if(page==2)it.kind=="chat" else it.kind!="chat"}
                 if(tasks.isEmpty())Text("Задач нет.")
-                tasks.forEach{t->Card(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(5.dp)){Text(t.title,style=MaterialTheme.typography.titleMedium);Text(statusLabel(t.state));if(t.result.isNotBlank())Text(t.result);Text(t.id,style=MaterialTheme.typography.bodySmall)}}}
+                tasks.forEach{t->
+                    Card(Modifier.fillMaxWidth()){
+                        Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(5.dp)){
+                            Text(t.title,style=MaterialTheme.typography.titleMedium)
+                            Text(statusLabel(t.state))
+                            if(t.result.isNotBlank())Text(t.result)
+                            if(t.kind=="chat" && t.parentId!=null)Text("Продолжение диалога",style=MaterialTheme.typography.bodySmall)
+                            if(t.kind=="chat" && t.state=="succeeded" && snap?.features?.contains("chat_parent")==true)
+                                TextButton(onClick={s.selectConversation(t);scope.launch{scroll.animateScrollTo(0)}},enabled=!s.busy&&!s.stale){Text("Продолжить")}
+                            if(t.state=="queued" && snap?.features?.contains("cancel_queued")==true)
+                                OutlinedButton(onClick={s.cancel(t)},enabled=!s.busy&&!s.stale){Text("Отменить")}
+                            Text(t.id,style=MaterialTheme.typography.bodySmall)
+                        }
+                    }
+                }
             }
             3 -> {
                 Text("Сервер управления")

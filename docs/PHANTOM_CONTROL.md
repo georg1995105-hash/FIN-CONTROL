@@ -14,3 +14,6 @@ Replace permanent bearer entry with one-use 256-bit enrollment code exchanged at
 
 ## Device acceptance of alpha02
 Android 15 x86_64 synthetic HTTPS UI contract CI SUCCESS: https://github.com/georg1995105-hash/FIN-CONTROL/actions/runs/46182422893 (head 3ba2e12b464ba36f6f6afdcdb8fefa7d463bd8cd). Evidence artifact 15277489300. Regular APK build CI 46182140592 SUCCESS. No physical device or actual private backend E2E yet.
+
+## Alpha03 conversation continuation
+Explicit new conversation or follow-up to a completed turn, six previous turn pairs maximum, separate task/chat drafts, model selection, automatic selection of successful pending response, queued-only cancel, feature negotiation for older server. Server history is currently limited to the latest 40 entries returned to app. Server changes have 33/33 local tests and both process smoke tests passed. No live model or production deployment. Android build and device checks pending.

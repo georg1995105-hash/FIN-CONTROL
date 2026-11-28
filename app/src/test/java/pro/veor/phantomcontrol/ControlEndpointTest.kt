@@ -17,6 +17,9 @@ class ControlEndpointTest {
         assertEquals("https://example.test/v1/session",ControlEndpoint.url("https://example.test","/v1/session").toString())
         assertEquals("https://example.test/v1/session/revoke",ControlEndpoint.url("https://example.test","/v1/session/revoke").toString())
     }
+    @Test fun queuedCancellationRoute(){
+        assertEquals("https://example.test/v1/tasks/cancel",ControlEndpoint.url("https://example.test","/v1/tasks/cancel").toString())
+    }
     @Test fun refusesArbitraryRoute(){
         assertTrue(runCatching{ControlEndpoint.url("https://example.test","//evil.test/x")}.isFailure)
     }

@@ -14,7 +14,7 @@ object ControlEndpoint {
         return URI("https", null, uri.host, uri.port, null, null, null).toASCIIString()
     }
     fun url(origin: String, path: String): URL {
-        require(path in setOf("/v1/status", "/v1/tasks", "/v1/session", "/v1/session/revoke"))
+        require(path in setOf("/v1/status", "/v1/tasks", "/v1/session", "/v1/session/revoke", "/v1/tasks/cancel"))
         return URI(normalize(origin) + path).toURL()
     }
 }

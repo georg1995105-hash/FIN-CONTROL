@@ -7,8 +7,8 @@ import org.json.JSONArray
 
 data class ServiceStatus(val name: String, val state: String, val detail: String)
 data class Capability(val kind: String, val models: List<String>)
-data class Task(val id: String, val kind: String, val state: String, val title: String, val result: String)
-data class Snapshot(val services: List<ServiceStatus>, val capabilities: List<Capability>, val tasks: List<Task>, val observedAt: String, val autopilot: String)
+data class Task(val id: String, val kind: String, val state: String, val title: String, val result: String, val parentId: String? = null)
+data class Snapshot(val services: List<ServiceStatus>, val capabilities: List<Capability>, val tasks: List<Task>, val observedAt: String, val autopilot: String, val features: Set<String> = emptySet())
 class ApiHttpException(val status:Int): Exception("Сервер отклонил запрос (HTTP $status).")
 class ControlApi private constructor(origin: String, private val token: String?) {
     private val endpoint = ControlEndpoint.normalize(origin)
@@ -68,10 +68,18 @@ class ControlApi private constructor(origin: String, private val token: String?)
             Capability(it.getString("kind"), (0 until a.length()).map { j -> a.getString(j) })
         }
         val tasks = objects(request("/v1/tasks").getJSONArray("tasks")).map {
-            Task(it.getString("id"), it.getString("kind"), it.getString("state"), it.getString("title"), it.optString("result"))
+            Task(it.getString("id"), it.getString("kind"), it.getString("state"), it.getString("title"), it.optString("result"), if(it.isNull("parent_id")) null else it.getString("parent_id"))
         }
-        return Snapshot(services, caps, tasks, s.optString("observed_at"), s.getString("autopilot"))
+        val flags=s.optJSONArray("features")
+        val features=if(flags==null) emptySet() else (0 until flags.length()).map { flags.getString(it) }.toSet()
+        return Snapshot(services, caps, tasks, s.optString("observed_at"), s.getString("autopilot"),features)
     }
-    fun submit(id: String, kind: String, model: String, title: String): String =
-        request("/v1/tasks", JSONObject().put("request_id", id).put("kind", kind).put("model", model).put("title", title)).getString("id").also { require(it == id) { "Несовпадение ID задачи." } }
+    fun submit(id: String, kind: String, model: String, title: String, parentId:String?=null): String {
+        val body=JSONObject().put("request_id", id).put("kind", kind).put("model", model).put("title", title)
+        if(parentId!=null)body.put("parent_id",parentId)
+        return request("/v1/tasks",body).getString("id").also { require(it == id) { "Несовпадение ID задачи." } }
+    }
+    fun cancel(id:String) {
+        require(request("/v1/tasks/cancel",JSONObject().put("id",id)).getString("state")=="cancelled")
+    }
 }
