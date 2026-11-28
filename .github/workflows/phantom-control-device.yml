@@ -1,0 +1,73 @@
+name: PHANTOM CONTROL Android HTTPS device contract
+on:
+  push:
+    branches: [work/phantom-control-20261128]
+    paths: ["tools/control-qa/**", ".github/workflows/phantom-control-device.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  device:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: SDK and hardware acceleration
+        run: |
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+          test -e /dev/kvm
+          sudo chmod 666 /dev/kvm
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+      - name: Ephemeral lab-only certificate and APK
+        run: |
+          set -eu
+          umask 077
+          mkdir -p "$RUNNER_TEMP/control-qa" app/src/debug/res/raw app/src/debug/res/xml
+          d="$RUNNER_TEMP/control-qa"
+          openssl req -x509 -newkey rsa:2048 -nodes -days 1 -subj /CN=PHANTOM-QA-CA -addext basicConstraints=critical,CA:TRUE -keyout "$d/ca.key" -out "$d/ca.pem" >/dev/null 2>&1
+          openssl req -new -newkey rsa:2048 -nodes -subj /CN=10.0.2.2 -keyout "$d/leaf.key" -out "$d/leaf.csr" >/dev/null 2>&1
+          printf 'subjectAltName=IP:10.0.2.2,DNS:localhost\nbasicConstraints=critical,CA:FALSE\nextendedKeyUsage=serverAuth\n' > "$d/leaf.ext"
+          openssl x509 -req -in "$d/leaf.csr" -CA "$d/ca.pem" -CAkey "$d/ca.key" -CAcreateserial -days 1 -extfile "$d/leaf.ext" -out "$d/leaf.pem"
+          cp "$d/ca.pem" app/src/debug/res/raw/qa_ca.pem
+          cat > app/src/debug/res/xml/qa_network_security.xml <<'XML'
+          <network-security-config>
+            <domain-config cleartextTrafficPermitted="false">
+              <domain>10.0.2.2</domain>
+              <trust-anchors><certificates src="@raw/qa_ca"/></trust-anchors>
+            </domain-config>
+          </network-security-config>
+          XML
+          cat > app/src/debug/AndroidManifest.xml <<'XML'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+            <application android:networkSecurityConfig="@xml/qa_network_security"/>
+          </manifest>
+          XML
+          gradle --no-daemon --console=plain :app:assembleDebug
+          # Never publish this special debug APK or the synthetic private keys.
+          test -s app/build/outputs/apk/debug/app-debug.apk
+      - name: Real Android HTTPS UI contract
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
+        with:
+          api-level: 35
+          target: default
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: python3 tools/control-qa/ui_smoke.py "$RUNNER_TEMP/control-qa/leaf.pem" "$RUNNER_TEMP/control-qa/leaf.key" app/build/outputs/apk/debug/app-debug.apk
+      - name: Evidence only (never lab APK or certificate keys)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: phantom-control-device-evidence
+          path: control-qa-evidence/
+          if-no-files-found: warn
+          retention-days: 7
