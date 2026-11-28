@@ -28,12 +28,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import java.util.UUID
 
 class MainActivity : ComponentActivity() {
+    private lateinit var state: ControlState
+    override fun onStart() { super.onStart(); state.startPolling() }
+    override fun onStop() { state.stopPolling(); super.onStop() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val state = ViewModelProvider(this)[ControlState::class.java]
+        state = ViewModelProvider(this)[ControlState::class.java]
         val prefs = getSharedPreferences("appearance", MODE_PRIVATE)
         setContent {
             var theme by rememberSaveable { mutableStateOf(prefs.getString("theme","auto") ?: "auto") }
@@ -62,6 +67,17 @@ class ControlState : ViewModel() {
     var model by mutableStateOf("")
     private var lastSubmission: Pair<List<String>,String>? = null
     private var api: ControlApi? = null
+    private var polling: Job? = null
+    fun startPolling() {
+        if(polling?.isActive==true)return
+        polling=viewModelScope.launch {
+            while(true){
+                delay(if(stale)30000L else 10000L)
+                if(snapshot!=null && api!=null && !busy)refresh()
+            }
+        }
+    }
+    fun stopPolling(){polling?.cancel();polling=null}
     fun disconnect() {
         if(busy) return
         token="";api=null;snapshot=null;stale=true;error=null;lastSubmission=null
@@ -101,12 +117,23 @@ class ControlState : ViewModel() {
         busy=true;error=null
         viewModelScope.launch {
             try{action()}catch(e:CancellationException){throw e}
-            catch(e:Exception){stale=true;error=if(e is IllegalStateException)e.message ?: "Ошибка сервера." else "Связь или формат ответа недоступны. Проверьте подключение."}
+            catch(e:Exception){
+                stale=true
+                if(e is ApiHttpException && e.status==401){api=null;snapshot=null;token="";error="Сеанс недействителен. Подключитесь снова."}
+                else error=if(e is ApiHttpException)e.message else "Связь или формат ответа недоступны. Проверьте подключение."
+            }
             finally{busy=false}
         }
     }
 }
 private val titles=listOf("Главная","Задачи","Чат","Настройки")
+private fun statusLabel(value:String)=when(value){
+    "ok"->"Работает";"degraded"->"Нестабильно";"failed"->"Ошибка";"unknown"->"Не проверено"
+    "queued"->"В очереди";"running"->"Выполняется";"succeeded"->"Завершено";"needs_review"->"Требуется проверка"
+    "disabled"->"Выключен";else->value
+}
+private fun kindLabel(value:String)=when(value){"diagnose"->"Диагностика (только чтение)";"develop"->"Разработка";"chat"->"Чат";else->value}
+private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная диагностика" else value
 @Composable private fun ControlScreen(s:ControlState,theme:String,onTheme:(String)->Unit){
     var page by rememberSaveable { mutableIntStateOf(0) }
     BackHandler(page!=0){page=0}
@@ -138,10 +165,11 @@ private val titles=listOf("Главная","Задачи","Чат","Настро
             0 -> {
                 if(snap==null){Text("Подключите персональный сервер управления.");Button(onClick={navigate(3)}){Text("Подключение")}}
                 else{
-                    Text("Последнее наблюдение: "+snap.observedAt)
-                    Text("Автопилот: "+snap.autopilot)
+                    Text("Последнее наблюдение: "+snap.observedAt.ifBlank{"Нет данных"})
+                    Text("Автопилот: "+statusLabel(snap.autopilot))
+                    if(snap.services.isEmpty())Text("Нет подтверждённых наблюдений.")
                     snap.services.forEach{item->
-                        Card(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp)){Text(item.name,style=MaterialTheme.typography.titleMedium);Text(if(s.stale)"Данные устарели" else item.state);Text(item.detail)}}
+                        Card(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp)){Text(item.name,style=MaterialTheme.typography.titleMedium);Text(if(s.stale)"Данные устарели" else statusLabel(item.state));Text(if(s.stale)"Обновите подключение" else item.detail)}}
                     }
                     Button(onClick={navigate(1)}){Text("Задачи")}
                 }
@@ -153,16 +181,16 @@ private val titles=listOf("Главная","Задачи","Чат","Настро
                     val selected=available.firstOrNull{it.kind==s.kind} ?: available.first()
                     LaunchedEffect(selected.kind){s.kind=selected.kind;if(s.model !in selected.models)s.model=selected.models.firstOrNull()?:""}
                     Text("Тип задачи")
-                    available.forEach{c-> FilterChip(c.kind==s.kind,{s.kind=c.kind;s.model=c.models.firstOrNull()?:""},{Text(c.kind)})}
+                    available.forEach{c-> FilterChip(c.kind==s.kind,{s.kind=c.kind;s.model=c.models.firstOrNull()?:""},{Text(kindLabel(c.kind))})}
                     Text("Исполнитель")
-                    selected.models.forEach{m-> FilterChip(m==s.model,{s.model=m},{Text(m)})}
+                    selected.models.forEach{m-> FilterChip(m==s.model,{s.model=m},{Text(modelLabel(m))})}
                     OutlinedTextField(s.draft,{s.draft=it},Modifier.fillMaxWidth(),label={Text("Поручение")},minLines=3)
                     Button(onClick={s.submit()},enabled=!s.busy&&!s.stale&&s.draft.isNotBlank()&&s.model in selected.models){Text("Запустить")}
                 }
                 Text("История задач",style=MaterialTheme.typography.titleLarge)
                 val tasks=snap?.tasks.orEmpty().filter{if(page==2)it.kind=="chat" else it.kind!="chat"}
                 if(tasks.isEmpty())Text("Задач нет.")
-                tasks.forEach{t->Card(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(5.dp)){Text(t.title,style=MaterialTheme.typography.titleMedium);Text(t.state);if(t.result.isNotBlank())Text(t.result);Text(t.id,style=MaterialTheme.typography.bodySmall)}}}
+                tasks.forEach{t->Card(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(5.dp)){Text(t.title,style=MaterialTheme.typography.titleMedium);Text(statusLabel(t.state));if(t.result.isNotBlank())Text(t.result);Text(t.id,style=MaterialTheme.typography.bodySmall)}}}
             }
             3 -> {
                 Text("Сервер управления")

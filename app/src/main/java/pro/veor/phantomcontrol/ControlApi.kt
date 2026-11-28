@@ -9,6 +9,7 @@ data class ServiceStatus(val name: String, val state: String, val detail: String
 data class Capability(val kind: String, val models: List<String>)
 data class Task(val id: String, val kind: String, val state: String, val title: String, val result: String)
 data class Snapshot(val services: List<ServiceStatus>, val capabilities: List<Capability>, val tasks: List<Task>, val observedAt: String, val autopilot: String)
+class ApiHttpException(val status:Int): Exception("Сервер отклонил запрос (HTTP $status).")
 class ControlApi(origin: String, private val token: String) {
     private val endpoint = ControlEndpoint.normalize(origin)
     init { require(token.length in 24..4096 && token.all { it.code in 33..126 }) }
@@ -30,7 +31,7 @@ class ControlApi(origin: String, private val token: String) {
                 c.outputStream.use { it.write(data) }
             }
             val status = c.responseCode
-            if (status !in 200..299) throw IllegalStateException("Сервер отклонил запрос (HTTP $status).")
+            if (status !in 200..299) throw ApiHttpException(status)
             require(c.contentType?.substringBefore(';')?.trim()?.equals("application/json", true) == true) { "Неверный тип ответа." }
             val data = c.inputStream.use { input ->
                 val out = java.io.ByteArrayOutputStream()
