@@ -10,9 +10,19 @@ data class Capability(val kind: String, val models: List<String>)
 data class Task(val id: String, val kind: String, val state: String, val title: String, val result: String)
 data class Snapshot(val services: List<ServiceStatus>, val capabilities: List<Capability>, val tasks: List<Task>, val observedAt: String, val autopilot: String)
 class ApiHttpException(val status:Int): Exception("Сервер отклонил запрос (HTTP $status).")
-class ControlApi(origin: String, private val token: String) {
+class ControlApi private constructor(origin: String, private val token: String?) {
     private val endpoint = ControlEndpoint.normalize(origin)
-    init { require(token.length in 24..4096 && token.all { it.code in 33..126 }) }
+    init { require(token == null || token.matches(Regex("[A-Za-z0-9_-]{43}"))) }
+    companion object {
+        fun pair(origin: String, code: String): ControlApi {
+            require(code.matches(Regex("[A-Za-z0-9_-]{43}"))) { "Неверный формат кода." }
+            val result = ControlApi(origin, null).request("/v1/session", JSONObject().put("code", code))
+            require(result.getInt("expires_in") in 1..43200)
+            return ControlApi(origin, result.getString("token"))
+        }
+    }
+    fun revoke() { require(request("/v1/session/revoke", JSONObject()).getBoolean("revoked")) }
+
     private fun request(path: String, body: JSONObject? = null): JSONObject {
         val c = ControlEndpoint.url(endpoint, path).openConnection() as HttpURLConnection
         try {
@@ -21,7 +31,8 @@ class ControlApi(origin: String, private val token: String) {
             c.readTimeout = 15000
             c.useCaches = false
             c.setRequestProperty("Accept", "application/json")
-            c.setRequestProperty("Authorization", "Bearer " + token)
+            require((path == "/v1/session") == (token == null))
+            if (token != null) c.setRequestProperty("Authorization", "Bearer " + token)
             if (body != null) {
                 val data = body.toString().toByteArray(StandardCharsets.UTF_8)
                 c.requestMethod = "POST"
@@ -62,5 +73,5 @@ class ControlApi(origin: String, private val token: String) {
         return Snapshot(services, caps, tasks, s.optString("observed_at"), s.getString("autopilot"))
     }
     fun submit(id: String, kind: String, model: String, title: String): String =
-        request("/v1/tasks", JSONObject().put("request_id", id).put("kind", kind).put("model", model).put("title", title)).getString("id")
+        request("/v1/tasks", JSONObject().put("request_id", id).put("kind", kind).put("model", model).put("title", title)).getString("id").also { require(it == id) { "Несовпадение ID задачи." } }
 }

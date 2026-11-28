@@ -13,6 +13,10 @@ class ControlEndpointTest {
             assertTrue(it,runCatching{ControlEndpoint.normalize(it)}.isFailure)
         }
     }
+    @Test fun enrollmentRoutes(){
+        assertEquals("https://example.test/v1/session",ControlEndpoint.url("https://example.test","/v1/session").toString())
+        assertEquals("https://example.test/v1/session/revoke",ControlEndpoint.url("https://example.test","/v1/session/revoke").toString())
+    }
     @Test fun refusesArbitraryRoute(){
         assertTrue(runCatching{ControlEndpoint.url("https://example.test","//evil.test/x")}.isFailure)
     }

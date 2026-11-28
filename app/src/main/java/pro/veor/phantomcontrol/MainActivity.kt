@@ -57,7 +57,8 @@ class MainActivity : ComponentActivity() {
 }
 class ControlState : ViewModel() {
     var origin by mutableStateOf("")
-    var token by mutableStateOf("")
+    var pairingCode by mutableStateOf("")
+    var connected by mutableStateOf(false); private set
     var snapshot by mutableStateOf<Snapshot?>(null); private set
     var error by mutableStateOf<String?>(null); private set
     var busy by mutableStateOf(false); private set
@@ -73,31 +74,54 @@ class ControlState : ViewModel() {
         polling=viewModelScope.launch {
             while(true){
                 delay(if(stale)30000L else 10000L)
-                if(snapshot!=null && api!=null && !busy)refresh()
+                if(connected && api!=null && !busy)refresh()
             }
         }
     }
     fun stopPolling(){polling?.cancel();polling=null}
+    private fun clearSession() {
+        pairingCode="";api=null;snapshot=null;connected=false;stale=true;lastSubmission=null
+        draft="";model=""
+    }
     fun disconnect() {
         if(busy) return
-        token="";api=null;snapshot=null;stale=true;error=null;lastSubmission=null
+        val client=api
+        if(client==null){clearSession();error=null;return}
+        runWork {
+            try {
+                withContext(Dispatchers.IO){client.revoke()}
+                clearSession()
+            } catch(e:CancellationException){throw e}
+            catch(e:Exception) {
+                clearSession()
+                if(e !is ApiHttpException || e.status!=401)
+                    error="Локальный выход выполнен. Отзыв на сервере не подтверждён; срок сеанса ограничен 12 часами."
+            }
+        }
     }
     fun connect() {
-        if(busy) return
-        api=null;snapshot=null;stale=true
-        try { api=ControlApi(origin,token) } catch (_:Exception) {
-            error="Введите корректный HTTPS-адрес и токен доступа."; return
+        if(busy || connected) return
+        val address=try{ControlEndpoint.normalize(origin)}catch(_:Exception){
+            error="Введите корректный HTTPS-адрес.";return
         }
-        refresh()
+        val code=pairingCode.trim()
+        if(!code.matches(Regex("[A-Za-z0-9_-]{43}"))){error="Введите одноразовый код подключения.";return}
+        pairingCode=""
+        runWork {
+            val client=withContext(Dispatchers.IO){ControlApi.pair(address,code)}
+            api=client;connected=true;origin=address
+            applySnapshot(withContext(Dispatchers.IO){client.snapshot()})
+        }
+    }
+    private fun applySnapshot(v:Snapshot) {
+        snapshot=v;stale=false
+        if(v.capabilities.none{it.kind==kind})kind=v.capabilities.firstOrNull()?.kind ?: ""
+        val models=v.capabilities.firstOrNull{it.kind==kind}?.models.orEmpty()
+        if(model !in models)model=models.firstOrNull() ?: ""
     }
     fun refresh() {
         val client=api ?: return
-        runWork { val v=withContext(Dispatchers.IO){client.snapshot()}
-            snapshot=v;stale=false
-            if(v.capabilities.none{it.kind==kind})kind=v.capabilities.firstOrNull()?.kind ?: ""
-            val models=v.capabilities.firstOrNull{it.kind==kind}?.models.orEmpty()
-            if(model !in models)model=models.firstOrNull() ?: ""
-        }
+        runWork { applySnapshot(withContext(Dispatchers.IO){client.snapshot()}) }
     }
     fun submit() {
         val client=api ?: return
@@ -109,7 +133,7 @@ class ControlState : ViewModel() {
         runWork {
             withContext(Dispatchers.IO){client.submit(id,content[0],content[1],content[2])}
             lastSubmission=null;draft=""
-            snapshot=withContext(Dispatchers.IO){client.snapshot()};stale=false
+            applySnapshot(withContext(Dispatchers.IO){client.snapshot()})
         }
     }
     private fun runWork(action:suspend ()->Unit){
@@ -119,8 +143,8 @@ class ControlState : ViewModel() {
             try{action()}catch(e:CancellationException){throw e}
             catch(e:Exception){
                 stale=true
-                if(e is ApiHttpException && e.status==401){api=null;snapshot=null;token="";error="Сеанс недействителен. Подключитесь снова."}
-                else error=if(e is ApiHttpException)e.message else "Связь или формат ответа недоступны. Проверьте подключение."
+                if(e is ApiHttpException && e.status==401){val hadSession=connected;clearSession();error=if(hadSession)"Сеанс истёк или отозван. Подключитесь снова." else "Код недействителен, использован или истёк. Получите новый код."}
+                else error=if(e is ApiHttpException)e.message else if(!connected)"Подключение не подтверждено. Код мог быть использован; получите новый код." else "Связь или формат ответа недоступны. Проверьте подключение."
             }
             finally{busy=false}
         }
@@ -155,7 +179,7 @@ private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная 
     Column(modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
         Row(verticalAlignment=Alignment.CenterVertically){
             Text(if(page==0)"PHANTOM CONTROL" else titles[page],style=MaterialTheme.typography.headlineSmall,modifier=Modifier.weight(1f))
-            IconButton(onClick={s.refresh()},enabled=!s.busy && s.snapshot!=null){Icon(Icons.Filled.Refresh,"Обновить")}
+            IconButton(onClick={s.refresh()},enabled=!s.busy && s.connected){Icon(Icons.Filled.Refresh,"Обновить")}
         }
         if(s.busy)LinearProgressIndicator(Modifier.fillMaxWidth())
         s.error?.let{Text(it,color=MaterialTheme.colorScheme.error)}
@@ -163,7 +187,7 @@ private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная 
         val snap=s.snapshot
         when(page){
             0 -> {
-                if(snap==null){Text("Подключите персональный сервер управления.");Button(onClick={navigate(3)}){Text("Подключение")}}
+                if(snap==null){Text(if(s.connected)"Ожидание данных сервера." else "Подключите персональный сервер управления.");Button(onClick={if(s.connected)s.refresh() else navigate(3)},enabled=!s.busy){Text(if(s.connected)"Повторить" else "Подключение")}}
                 else{
                     Text("Последнее наблюдение: "+snap.observedAt.ifBlank{"Нет данных"})
                     Text("Автопилот: "+statusLabel(snap.autopilot))
@@ -194,12 +218,12 @@ private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная 
             }
             3 -> {
                 Text("Сервер управления")
-                OutlinedTextField(s.origin,{s.origin=it},Modifier.fillMaxWidth(),label={Text("HTTPS-адрес")},singleLine=true,enabled=!s.busy&&snap==null)
-                OutlinedTextField(s.token,{s.token=it},Modifier.fillMaxWidth(),label={Text("Токен доступа")},singleLine=true,visualTransformation=PasswordVisualTransformation(),enabled=!s.busy&&snap==null)
-                Text("Токен хранится только в памяти текущего сеанса.")
+                OutlinedTextField(s.origin,{s.origin=it},Modifier.fillMaxWidth(),label={Text("HTTPS-адрес")},singleLine=true,enabled=!s.busy&&!s.connected)
+                if(!s.connected) OutlinedTextField(s.pairingCode,{s.pairingCode=it},Modifier.fillMaxWidth(),label={Text("Одноразовый код")},singleLine=true,visualTransformation=PasswordVisualTransformation(),enabled=!s.busy)
+                Text(if(s.connected)"Сеанс активен. Срок действия до 12 часов." else "Код действует 10 минут. Получите его через доверенный канал владельца.")
                 Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){
-                    Button(onClick={s.connect()},enabled=!s.busy&&snap==null){Text("Подключить")}
-                    OutlinedButton(onClick={s.disconnect()},enabled=!s.busy){Text("Отключить")}
+                    Button(onClick={s.connect()},enabled=!s.busy&&!s.connected){Text("Подключить")}
+                    OutlinedButton(onClick={s.disconnect()},enabled=!s.busy&&s.connected){Text("Выйти")}
                 }
                 Text("Тема оформления",style=MaterialTheme.typography.titleLarge)
                 listOf("auto" to "Авто","graphite" to "Графит","navy" to "Тёмно-синяя","light" to "Светлая").forEach{(key,label)->FilterChip(theme==key,{onTheme(key)},{Text(label)})}

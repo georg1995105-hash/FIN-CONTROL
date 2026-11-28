@@ -8,3 +8,6 @@ First acceptance: unit tests, APK build and lint, actual client/server integrati
 
 ## Build and UI follow-up
 First CI #46181026921 failed before Kotlin compilation: Maven Central HTTP 429 resolving AGP transitive dependencies. Use the already deployed Phantom project's Google-hosted Central mirror first, no versions or security checks changed. Refresh while the app is in foreground, back off on connection errors, clear unauthorized sessions; no background monitor added. Labels distinguish read-only diagnostics and missing observations.
+
+## Alpha02 owner enrollment
+Replace permanent bearer entry with one-use 256-bit enrollment code exchanged at /v1/session; session expiry 12h; revoke via POST /v1/session/revoke. Codes never persisted in client, bearer remains in ViewModel memory only. If initial response is lost request a new code. A 401 clears the session, a failed logout warns if remote revocation is unconfirmed. Server-side jobs remain independent of UI. No automatic repair. Private service PR 1455. Android runtime TLS testing still required.
