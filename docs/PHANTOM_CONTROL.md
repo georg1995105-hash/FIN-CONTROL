@@ -11,3 +11,6 @@ First CI #46181026921 failed before Kotlin compilation: Maven Central HTTP 429 r
 
 ## Alpha02 owner enrollment
 Replace permanent bearer entry with one-use 256-bit enrollment code exchanged at /v1/session; session expiry 12h; revoke via POST /v1/session/revoke. Codes never persisted in client, bearer remains in ViewModel memory only. If initial response is lost request a new code. A 401 clears the session, a failed logout warns if remote revocation is unconfirmed. Server-side jobs remain independent of UI. No automatic repair. Private service PR 1455. Android runtime TLS testing still required.
+
+## Device acceptance of alpha02
+Android 15 x86_64 synthetic HTTPS UI contract CI SUCCESS: https://github.com/georg1995105-hash/FIN-CONTROL/actions/runs/46182422893 (head 3ba2e12b464ba36f6f6afdcdb8fefa7d463bd8cd). Evidence artifact 15277489300. Regular APK build CI 46182140592 SUCCESS. No physical device or actual private backend E2E yet.
