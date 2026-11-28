@@ -89,6 +89,36 @@ try:
     enter('Одноразовый код',server.issue());tap('Подключить')
     node('Сеанс активен. Срок действия до 12 часов.')
     tap('Задачи');node('qa_readonly')
+    # Real Android client, synthetic provider only: independent threads and selected context.
+    tap('Чат');node('Без предыдущего контекста')
+    enter('Сообщение','qa_chat_one');tap('Отправить')
+    node('Продолжение: qa_chat_one',55)
+    enter('Сообщение','qa_follow_up');tap('Отправить')
+    node('Продолжение: qa_follow_up',55)
+    with server.lock:
+        first=next(t for t in server.tasks.values() if t['title']=='qa_chat_one')
+        second=next(t for t in server.tasks.values() if t['title']=='qa_follow_up')
+        assert first['parent_id'] is None and second['parent_id']==first['id']
+    tap('Новый диалог');node('Без предыдущего контекста')
+    tap('fixture-chat/medium')
+    enter('Сообщение','qa_unrelated');tap('Отправить')
+    node('Продолжение: qa_unrelated',55)
+    with server.lock:
+        independent=next(t for t in server.tasks.values() if t['title']=='qa_unrelated')
+        assert independent['parent_id'] is None and independent['model']=='fixture-chat/medium'
+    screenshot('04-chat-continuation')
+    tap('Задачи')
+    enter('Поручение','qa_cancel');tap('Запустить')
+    # Scroll to the queued card when it is below the composer.
+    for _ in range(4):
+        try:node('Отменить',4);break
+        except AssertionError:
+            adb('shell','input','swipe','500','1500','500','650','400')
+    tap('Отменить');node('Отменено')
+    with server.lock:
+        assert next(t for t in server.tasks.values() if t['title']=='qa_cancel')['state']=='cancelled'
+    screenshot('05-queued-cancel')
+    tap('Главная')
     with server.lock:server.token=None
     tap('Обновить')
     node('Сеанс истёк или отозван. Подключитесь снова.')
@@ -96,7 +126,7 @@ try:
     screenshot('03-revoked')
     adb('shell','am','force-stop',PKG);start()
     node('Подключите персональный сервер управления.')
-    (OUT/'result.txt').write_text('PASS: actual Android UI; invalid code, HTTPS enrollment, failed service state, task execution contract, background return, logout/re-enrollment, preserved task, remote revocation, process restart.\n')
+    (OUT/'result.txt').write_text('PASS: actual Android UI; invalid code, HTTPS enrollment, failed service state, task execution contract, background return, logout/re-enrollment, preserved task, selected conversation context, independent dialog, model selection, queued cancellation, remote revocation, process restart.\n')
     print((OUT/'result.txt').read_text())
 finally:
     server.shutdown();thread.join();server.server_close()

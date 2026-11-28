@@ -241,7 +241,7 @@ private fun modelLabel(value:String)=if(value=="local-readonly")"Штатная 
                     val supportsHistory=snap?.features?.contains("chat_parent")==true
                     if(isChat && supportsHistory){
                         Row(Modifier.fillMaxWidth(),verticalAlignment=Alignment.CenterVertically){
-                            Text(if(s.chatParent==null)"Новый диалог" else "Продолжение: "+s.chatParent!!.title.take(80),modifier=Modifier.weight(1f))
+                            Text(if(s.chatParent==null)"Без предыдущего контекста" else "Продолжение: "+s.chatParent!!.title.take(80),modifier=Modifier.weight(1f))
                             OutlinedButton(onClick={s.selectConversation(null)},enabled=!s.busy){Text("Новый диалог")}
                         }
                         Text("В контекст входят до шести предыдущих ответов выбранного диалога.",style=MaterialTheme.typography.bodySmall)
